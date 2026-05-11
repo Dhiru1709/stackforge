@@ -3818,7 +3818,7 @@ function doGenerate(goal, budget) {
     var badge = s.priority==='must'?'Must-Have':s.priority==='nice'?'Nice-to-Have':'Advanced';
     var bc    = s.priority==='must'?'var(--gold)':s.priority==='nice'?'var(--rose)':'var(--gold2)';
     return [
-      '<div style="background:var(--bg2);padding:1.4rem;border:1px solid rgba(201,168,76,.1)">',
+      '<div class="sc vis" data-id="'+s.id+'" style="background:var(--bg2);padding:1.4rem;border:1px solid rgba(201,168,76,.1)">',
       '<div style="display:flex;justify-content:space-between;margin-bottom:.7rem">',
       '<div style="width:36px;height:36px;border:1px solid rgba(201,168,76,.2);display:flex;align-items:center;justify-content:center">',
       '<svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5" style="width:15px;height:15px">'+s.icon+'</svg></div>',
@@ -3857,12 +3857,30 @@ function doGenerate(goal, budget) {
   ].join('');
 
   if(typeof showToast!=='undefined') showToast(supps.length+' supplements selected!','success',2500);
+
+  // Buy on Amazon buttons
+  setTimeout(function(){
+    ct.querySelectorAll('[data-id]').forEach(function(card){
+      if(card.querySelector('.sc-buy-btn')) return;
+      var sid=card.dataset.id;
+      if(!sid||!AFFILIATE_URLS||!AFFILIATE_URLS[sid]) return;
+      var btn=document.createElement('a');
+      btn.className='sc-buy-btn';
+      btn.href=AFFILIATE_URLS[sid];
+      btn.target='_blank';
+      btn.rel='noopener noreferrer';
+      btn.innerHTML='&#128722; Buy on Amazon';
+      card.appendChild(btn);
+    });
+  },400);
+
   if(typeof initChecklist==='function'){
     var tm={'Mass Gainer':'Post-workout','Whey Protein':'Post-workout','Creatine Monohydrate':'Anytime','Multivitamin':'With breakfast','Omega-3 Fish Oil':'With meals','ZMA (Zinc-Magnesium-B6)':'Before bed','Whey Isolate':'Post-workout','Casein Protein':'Before bed','BCAA 2:1:1':'During workout','Pre-Workout':'20min before','Electrolyte Mix':'During workout','Beta-Alanine':'Pre-workout','Iron + Vitamin B12':'With breakfast','Magnesium Glycinate':'Before bed'};
     initChecklist(supps.map(function(s){return {name:s.name,timing:tm[s.name]||'As directed'};}));
   }
   if(typeof addAffiliateBtns==='function') setTimeout(addAffiliateBtns,300);
   rd.scrollIntoView({behavior:'smooth',block:'nearest'});
+  if(typeof addAffiliateBtns==='function') setTimeout(addAffiliateBtns,300);
 }
 
 
@@ -6827,7 +6845,7 @@ var AFFILIATE_URLS = {
 
 function addAffiliateBtns(){
   document.querySelectorAll('.sc').forEach(function(card){
-    var id = card.dataset.id;
+    var id = card.dataset.id || card.dataset.sid;
     if(!id||!AFFILIATE_URLS[id]) return;
     if(card.querySelector('.sc-buy-btn')) return;
     var btn = document.createElement('a');
