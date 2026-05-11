@@ -3447,6 +3447,12 @@ nav.scrolled {
       <div class="thc-desc">Is your fitness goal realistic? Enter target and timeline — get a science-based honest assessment.</div>
       <div class="thc-link">Check Goal &#8594;</div>
     </div>
+    <div class="tool-hub-card" onclick="sfNavigate('tools/brand-checker')">
+      <span class="thc-icon">&#128270;</span>
+      <div class="thc-title">Brand Safety Checker</div>
+      <div class="thc-desc">FSSAI certified? Third-party tested? Check 15+ Indian &amp; international supplement brands instantly.</div>
+      <div class="thc-link">Check Brand &#8594;</div>
+    </div>
     <div class="tool-hub-card" onclick="sfNavigate('tools/protein-builder')">
       <span class="thc-icon">&#127371;</span>
       <div class="thc-title">Protein Plate Builder</div>
@@ -4263,12 +4269,22 @@ function googleTranslateElementInit(){new google.translate.TranslateElement({pag
   </div>
 
   <!-- Key bar -->
-  <div class="ai-key-bar" id="aiKeyBar">
-    <label class="flbl">API Key</label>
-    <div style="position:relative">
-      <input type="password" id="aiKeyInput" class="ai-key-input" placeholder="gsk_... (Groq Free) or AIza... or sk-ant-...">
-      <button class="ai-key-toggle" onclick="var i=document.getElementById('aiKeyInput');i.type=i.type==='password'?'text':'password'">&#128065;</button>
+  <div class="ai-key-bar" <div class="ai-key-bar" id="aiKeyBar">
+    <div style="font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem">&#128273; Add Your Free API Key</div>
+    <div style="font-size:.8rem;color:var(--muted);line-height:1.7;margin-bottom:.8rem">
+      Get a <strong style="color:var(--cream)">free Groq API key</strong> in 1 minute:
+      <br>1. Go to <a href="https://console.groq.com/keys" target="_blank" style="color:var(--gold)">console.groq.com/keys</a>
+      <br>2. Sign up free → Create API Key
+      <br>3. Copy the key (starts with <code style="color:var(--gold2)">gsk_</code>)
+      <br>4. Paste below ↓
     </div>
+    <div style="display:flex;gap:.5rem;align-items:center">
+      <input id="aiKeyInput" type="password" class="cm-input" placeholder="gsk_xxxxxxxxxxxx" style="flex:1;font-family:'DM Mono',monospace;font-size:.7rem">
+      <button class="ai-key-toggle" onclick="var i=document.getElementById('aiKeyInput');i.type=i.type==='password'?'text':'password';this.textContent=i.type==='password'?'Show':'Hide'" style="font-family:'DM Mono',monospace;font-size:.55rem;padding:.4rem .7rem;border:1px solid rgba(201,168,76,.2);background:transparent;color:var(--muted);cursor:pointer">Show</button>
+    </div>
+    <button class="abtn" onclick="aiSaveKey()" style="max-width:100%;margin:.6rem 0 0 0"><span>&#9889; Connect AI</span></button>
+    <div id="aiNoKey" style="display:none;font-family:'DM Mono',monospace;font-size:.58rem;color:var(--rose);margin-top:.4rem">&#9888; Key required to use AI Coach</div>
+  </div>
     <button class="abtn" onclick="aiSaveKey()" style="max-width:100%;margin:0"><span>Connect</span></button>
     <div class="ai-key-hint"><strong style="color:var(--gold)">FREE:</strong> <a href="https://console.groq.com/keys" target="_blank" rel="noopener">console.groq.com/keys</a> &rarr; Groq key &bull; Key saved in your browser only</div>
   </div>
@@ -4311,7 +4327,7 @@ function googleTranslateElementInit(){new google.translate.TranslateElement({pag
 </div>
 
 <script>
-var DEFAULT_AI_KEY='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';
+var DEFAULT_AI_KEY='';
 var aiOpen=false, aiHistory=[];
 var aiKey=localStorage.getItem('sf_ai_key')||DEFAULT_AI_KEY;
 var AI_MAX_HIST=20;
@@ -4392,31 +4408,26 @@ function aiToggleKeyVis(){
 }
 function aiSaveKey(){
   var inp=document.getElementById('aiKeyInput');
+  if(!inp) return;
   var key=inp.value.trim();
-  var isGroq=key.indexOf('gsk_')===0;
-  var isGemini=key.indexOf('AIza')===0;
-  var isAnthropic=key.indexOf('sk-ant-')===0;
-  if(!isGroq&&!isGemini&&!isAnthropic){
-    alert('Enter a valid API key:\n\n' +
-      'FREE  ✓  Groq key (starts with gsk_)\n' +
-      '         groq.com/keys — No billing needed\n\n' +
-      'FREE*    Gemini key (starts with AIza)\n' +
-      '         aistudio.google.com (billing req in India)\n\n' +
-      'PAID     Anthropic key (starts with sk-ant-)');
+  if(!key){ if(typeof showToast!=='undefined') showToast('Please enter your API key','error',2000); return; }
+  if(!key.startsWith('gsk_') && !key.startsWith('AIza') && !key.startsWith('sk-ant-')){
+    if(typeof showToast!=='undefined') showToast('Invalid key format. Should start with gsk_, AIza, or sk-ant-','error',3000);
     return;
   }
-  aiKey=key;
-  localStorage.setItem('sf_ai_key',key);
-  document.getElementById('aiKeyBar').classList.remove('show');
-  document.getElementById('aiNoKey').style.display='none';
-  document.getElementById('aiSendBtn').disabled=false;
-  inp.value='';
-  var provider=isGroq?'Groq (Free — Llama 3)':isGemini?'Google Gemini':'Anthropic Claude';
-  aiAddMsg('bot','<strong>'+provider+' connected!</strong> Ready to help with supplements, workouts, nutrition and your fitness goals.');
-  if(typeof showToast!=='undefined')showToast(provider+' connected!','success');
+  localStorage.setItem('sf_ai_key', key);
+  aiKey = key;
+  var kb = document.getElementById('aiKeyBar');
+  if(kb) kb.classList.remove('show');
+  var nk = document.getElementById('aiNoKey');
+  if(nk) nk.style.display='none';
+  var sb = document.getElementById('aiSendBtn');
+  if(sb) sb.disabled = false;
+  var provider = key.startsWith('gsk_') ? 'Groq' : key.startsWith('AIza') ? 'Gemini' : 'Anthropic';
+  if(typeof showToast!=='undefined') showToast(provider + ' AI connected! Ask me anything.','success',3000);
+  if(typeof aiRenderProfileChips==='function') aiRenderProfileChips();
 }
 
-// ── Clear chat ────────────────────────────────────────────────
 function aiClearChat(){
   aiHistory=[];
   var msgs=document.getElementById('aiMsgs');
@@ -4564,6 +4575,7 @@ async function aiSend(){
             }),
             signal:controller.signal
           });
+          if(!gres.ok){var eb=await gres.text();throw new Error('API '+gres.status+': '+(eb.slice(0,80)));}
           var gdata=await gres.json();
           // Rate limit or quota error — try next model
           if(gdata.error){
@@ -4628,8 +4640,13 @@ async function aiSend(){
   }catch(err){
     clearTimeout(reqTimeout);
     aiSetTyping(false);
-    var errMsg=err.name==='AbortError'?'Request timed out (30s). Please try again.':'Error: '+(err.message||'Check API key and internet connection.');
-    aiAddMsg('bot',errMsg,true);
+    var raw=err.message||'';
+    var errMsg=err.name==='AbortError'?'Request timed out. Please try again.':
+      raw.includes('401')||raw.includes('403')?'Invalid or expired API key. Go to console.groq.com/keys to get a new free key.':
+      raw.includes('429')?'Rate limit reached. Try again in a moment.':
+      raw.includes('API')?raw:
+      'Connection error. Check your internet and API key.';
+    aiAddMsg('bot','<span style="color:var(--rose)">&#9888; '+errMsg+'</span>',true);
     aiSetStatus('error');
     setTimeout(function(){aiSetStatus('online');},3000);
   }
@@ -5419,6 +5436,7 @@ function sfRenderPage(path){
   else if(path==='tools/gym-timer')    sfPageGymTimer(sub);
   else if(path==='tools/goal-check')   sfPageGoalCheck(sub);
   else if(path==='tools/protein-builder') sfPageProteinBuilder(sub);
+  else if(path==='tools/brand-checker')    sfPageBrandChecker(sub);
   else if(path==='tools/body-fat')     sfPageBodyFatTool(sub);
   else if(path==='tools/1rm')          sfPage1RMTool(sub);
   else if(path==='tools/macro-plate')  sfPageMacroPlate(sub);
@@ -6941,101 +6959,399 @@ window.runGoalCheck = function(){
 };
 
 // PROTEIN PLATE BUILDER
-var INDIAN_FOODS = [
-  {id:'eggs',      name:'Eggs',             protein:6,  unit:'per egg',       emoji:'\uD83E\uDD5A'},
-  {id:'chicken',   name:'Chicken Breast',   protein:31, unit:'per 100g',      emoji:'\uD83C\uDF57'},
-  {id:'paneer',    name:'Paneer',           protein:18, unit:'per 100g',      emoji:'\uD83E\uDDC0'},
-  {id:'dal',       name:'Dal (cooked)',      protein:9,  unit:'per 100g',      emoji:'\uD83C\uDF72'},
-  {id:'soya',      name:'Soya Chunks (dry)', protein:52, unit:'per 100g',      emoji:'\uD83C\uDF31'},
-  {id:'tuna',      name:'Tuna (canned)',     protein:26, unit:'per 100g',      emoji:'\uD83D\uDC1F'},
-  {id:'curd',      name:'Curd / Dahi',       protein:3,  unit:'per 100g',      emoji:'\uD83E\uDEA3'},
-  {id:'milk',      name:'Full Fat Milk',     protein:3.4,unit:'per 100ml',     emoji:'\uD83E\uDD5B'},
-  {id:'fish',      name:'Fish (Rohu/Pomfret)',protein:20, unit:'per 100g',     emoji:'\uD83D\uDC20'},
-  {id:'rajma',     name:'Rajma (cooked)',    protein:9,  unit:'per 100g',      emoji:'\uD83C\uDF31'},
-  {id:'chana',     name:'Chana (cooked)',    protein:8.9,unit:'per 100g',      emoji:'\uD83C\uDF31'},
-  {id:'whey',      name:'Whey Protein',      protein:24, unit:'per scoop (30g)',emoji:'\uD83D\uDCAA'},
+// ════════════════════════════════════════════════════════════════
+// FEATURE 1: SUPPLEMENT BRAND SAFETY CHECKER
+// Route: tools/brand-checker
+// ════════════════════════════════════════════════════════════════
+
+var BRAND_DB = [
+  {name:'AS-IT-IS Nutrition', grade:'A+', color:'#34d399',
+   fssai:true, thirdParty:true, indiaLocal:true,
+   pros:['FSSAI licensed','Transparent label with exact amounts','No proprietary blends','Lab tested batches','Most affordable authentic brand in India'],
+   cons:['Limited product range','Basic packaging'],
+   verdict:'Best budget authentic brand in India. Highly recommended for Creatine and Whey.',
+   certifications:['FSSAI','ISO 22000']},
+
+  {name:'MuscleBlaze', grade:'A', color:'#34d399',
+   fssai:true, thirdParty:true, indiaLocal:true,
+   pros:['FSSAI licensed','Informed Sport certified (some products)','Widely available','Indian formulation'],
+   cons:['Premium pricing for Indian brand','Some flavors over-sweetened'],
+   verdict:'Most popular Indian brand. Good quality, widely available. Check for Informed Sport seal on premium products.',
+   certifications:['FSSAI','Informed Sport (select products)']},
+
+  {name:'Optimum Nutrition (ON)', grade:'A+', color:'#34d399',
+   fssai:true, thirdParty:true, indiaLocal:false,
+   pros:['NSF Certified for Sport','Informed Sport certified','Gold standard in global market','Consistent quality since 1986'],
+   cons:['Most expensive','Counterfeit risk is high — buy from verified sources only'],
+   verdict:'Global gold standard. Excellent quality but verify authenticity. Buy from Amazon, ON website, or GNC only.',
+   certifications:['NSF Certified for Sport','Informed Sport','FSSAI (imported)']},
+
+  {name:'MyProtein India', grade:'A', color:'#34d399',
+   fssai:true, thirdParty:true, indiaLocal:false,
+   pros:['Informed Sport certified','Wide product range','Good value on sale','Batch tested'],
+   cons:['Quality can vary by product line','Some products use artificial sweeteners'],
+   verdict:'Reliable international brand with India operations. Good for Whey and Casein.',
+   certifications:['Informed Sport','FSSAI']},
+
+  {name:'Fast&Up', grade:'A', color:'#34d399',
+   fssai:true, thirdParty:true, indiaLocal:true,
+   pros:['FSSAI licensed','Effervescent format (better absorption)','Good for electrolytes','Transparent formulas'],
+   cons:['Limited protein products','Higher cost per serving'],
+   verdict:'Best for electrolytes and recovery supplements in India.',
+   certifications:['FSSAI','ISO']},
+
+  {name:'Nakpro', grade:'A-', color:'#a3e635',
+   fssai:true, thirdParty:false, indiaLocal:true,
+   pros:['FSSAI licensed','Affordable pricing','Good Whey quality','Growing transparency'],
+   cons:['Limited third-party testing info publicly available','Smaller brand, less track record'],
+   verdict:'Good affordable option. FSSAI certified. Third-party testing info not fully public.',
+   certifications:['FSSAI']},
+
+  {name:'Avvatar', grade:'A-', color:'#a3e635',
+   fssai:true, thirdParty:false, indiaLocal:true,
+   pros:['FSSAI licensed','Good quality Indian Whey','Transparent labeling','Affordable'],
+   cons:['Limited third-party testing info','Newer brand'],
+   verdict:'Solid Indian Whey brand. FSSAI certified, transparent labels.',
+   certifications:['FSSAI']},
+
+  {name:'GNC', grade:'A', color:'#34d399',
+   fssai:true, thirdParty:true, indiaLocal:false,
+   pros:['International quality standards','Wide range','Informed Choice certified products','Available at dedicated stores'],
+   cons:['Very expensive','Some products contain proprietary blends'],
+   verdict:'Premium international brand. Reliable quality but check for proprietary blends.',
+   certifications:['Informed Choice','FSSAI']},
+
+  {name:'Dymatize', grade:'A', color:'#34d399',
+   fssai:true, thirdParty:true, indiaLocal:false,
+   pros:['Informed Sport certified','Good amino acid profile','Consistent quality','NSF tested'],
+   cons:['Expensive in India','Limited availability'],
+   verdict:'Premium quality international brand. Excellent Whey Isolate.',
+   certifications:['Informed Sport','NSF']},
+
+  {name:'Scitron', grade:'B+', color:'#facc15',
+   fssai:true, thirdParty:false, indiaLocal:true,
+   pros:['FSSAI licensed','Good value for money','Indian brand','Decent product range'],
+   cons:['No public third-party testing data','Some user reports of inconsistent quality'],
+   verdict:'Decent Indian brand with FSSAI. Limited testing transparency. Acceptable for basic supplements.',
+   certifications:['FSSAI']},
+
+  {name:'Big Muscles Nutrition', grade:'B+', color:'#facc15',
+   fssai:true, thirdParty:false, indiaLocal:true,
+   pros:['FSSAI licensed','Affordable','Indian formulation'],
+   cons:['No third-party testing info','Mixed user reviews on quality consistency'],
+   verdict:'FSSAI certified Indian brand. Use for basic supplements, verify batches.',
+   certifications:['FSSAI']},
+
+  {name:'Healthkart HK Vitals', grade:'B+', color:'#facc15',
+   fssai:true, thirdParty:false, indiaLocal:true,
+   pros:['FSSAI licensed','Widely available','Affordable multivitamins and basic supps'],
+   cons:['Limited third-party testing','Basic product formulations'],
+   verdict:'Good for basic vitamins and minerals. FSSAI certified.',
+   certifications:['FSSAI']},
+
+  {name:'Endura Mass', grade:'B', color:'#fb923c',
+   fssai:true, thirdParty:false, indiaLocal:true,
+   pros:['FSSAI licensed','Widely available','Affordable mass gainer'],
+   cons:['High sugar content','No third-party testing','Low protein-to-carb ratio vs premium brands'],
+   verdict:'FSSAI certified but high sugar content. Better options available for mass gaining.',
+   certifications:['FSSAI']},
+
+  {name:'Patanjali Nutrela', grade:'B', color:'#fb923c',
+   fssai:true, thirdParty:false, indiaLocal:true,
+   pros:['FSSAI licensed','Affordable','Widely available across India','Vegetarian-friendly'],
+   cons:['No third-party testing','Limited product range','Basic formulations'],
+   verdict:'FSSAI certified, vegetarian-friendly. Basic quality, no third-party validation.',
+   certifications:['FSSAI']},
+
+  {name:'MuscleTech', grade:'A-', color:'#a3e635',
+   fssai:true, thirdParty:true, indiaLocal:false,
+   pros:['International brand','Informed Choice certified (some products)','Good research backing','Widely available'],
+   cons:['Expensive','Some products use proprietary blends','Aggressive marketing claims'],
+   verdict:'Reliable international brand. Check for Informed Choice seal on specific products.',
+   certifications:['Informed Choice (select)','FSSAI']}
 ];
 
-function sfPageProteinBuilder(el){
-  document.title = 'Protein Plate Builder \u2014 Indian Foods | StackForge';
-  var p = typeof aiProfile !== 'undefined' ? aiProfile : null;
-  var targetProtein = p && p.weight ? Math.round(parseFloat(p.weight) * 2) : 140;
+function sfPageBrandChecker(el) {
+  document.title = 'Supplement Brand Safety Checker | StackForge';
 
-  var foodsHTML = INDIAN_FOODS.map(function(food){
-    return '<div class="pb-food-row" id="pb-'+food.id+'">'
-      +'<label style="display:flex;align-items:center;gap:.7rem;cursor:pointer;width:100%">'
-      +'<input type="checkbox" class="pb-check" data-protein="'+food.protein+'" data-id="'+food.id+'" onchange="calcProteinTotal()" style="accent-color:var(--gold);width:16px;height:16px;flex-shrink:0">'
-      +'<span style="font-size:1.1rem">'+food.emoji+'</span>'
-      +'<div style="flex:1">'
-      +'<div style="font-size:.88rem;color:var(--cream)">'+food.name+'</div>'
-      +'<div style="font-family:\'DM Mono\',monospace;font-size:.5rem;color:var(--muted)">'+food.protein+'g protein '+food.unit+'</div>'
-      +'</div>'
-      +'<div class="pb-qty-wrap">'
-      +'<input type="number" class="pb-qty" data-id="'+food.id+'" min="0" max="10" step="0.5" value="1" style="width:55px;background:var(--bg);border:1px solid rgba(201,168,76,.2);color:var(--gold);font-family:\'DM Mono\',monospace;font-size:.7rem;padding:.25rem .4rem;text-align:center" onchange="calcProteinTotal()" oninput="calcProteinTotal()">'
-      +'</div>'
-      +'</label>'
-      +'</div>';
-  }).join('');
-
-  el.innerHTML = sfSubNav('Protein Builder')
+  el.innerHTML = sfSubNav('Brand Safety Checker')
   + '<div class="sp-body">'
   + '<div class="sp-hero">'
-  + '<div class="sp-tag">Indian Foods</div>'
-  + '<h1 class="sp-title">Protein <em>Plate</em> Builder</h1>'
-  + '<p class="sp-p" style="margin-top:.8rem">Tick what you have at home. Enter quantities. See your daily protein total.'+(p&&p.weight?' Your target: <strong>'+targetProtein+'g/day</strong> (based on '+p.weight+'kg)':'')+'</p>'
+  + '<div class="sp-tag">India Specific</div>'
+  + '<h1 class="sp-title">Is Your <em>Brand</em> Safe?</h1>'
+  + '<p class="sp-p" style="margin-top:.8rem">Check if your supplement brand is FSSAI certified, third-party tested and trustworthy. Based on publicly available certification data.</p>'
   + '</div>'
 
-  + '<div id="pbTarget" style="background:rgba(201,168,76,.04);border:1px solid rgba(201,168,76,.12);padding:1rem 1.5rem;margin-bottom:1.2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem">'
-  + '<div><div style="font-family:\'DM Mono\',monospace;font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Daily Target</div>'
-  + '<div style="font-family:\'Cormorant Garamond\',serif;font-size:2rem;font-weight:300;color:var(--gold)" id="pbTargetVal">'+targetProtein+'g</div></div>'
-  + '<div style="text-align:right"><div style="font-family:\'DM Mono\',monospace;font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">From Your Food</div>'
-  + '<div style="font-family:\'Cormorant Garamond\',serif;font-size:2rem;font-weight:300;color:var(--cream)" id="pbTotalVal">0g</div></div>'
-  + '<div style="width:100%"><div style="height:4px;background:rgba(201,168,76,.1);overflow:hidden">'
-  + '<div id="pbBar" style="height:100%;background:var(--gold);width:0%;transition:width .4s cubic-bezier(.23,1,.32,1)"></div>'
-  + '</div><div style="font-family:\'DM Mono\',monospace;font-size:.52rem;color:var(--muted);margin-top:.3rem" id="pbBarLabel">0% of daily target</div></div>'
-  + '</div>'
+  // Search box
+  + '<div style="position:relative;margin-bottom:1.5rem">'
+  + '<input type="text" id="brandSearch" class="cm-input" placeholder="Search brand name... (e.g. MuscleBlaze, AS-IT-IS, ON)" oninput="sfBrandSearch(this.value)" style="width:100%;padding-right:3rem;font-size:.9rem">'
+  + '<div style="position:absolute;right:1rem;top:50%;transform:translateY(-50%);color:var(--muted)">'
+  + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>'
+  + '</div></div>'
 
-  + '<div style="display:flex;flex-direction:column;gap:.5rem;margin-bottom:1.2rem">' + foodsHTML + '</div>'
+  // Results area
+  + '<div id="brandResults"></div>'
 
-  + '<div id="pbGap" style="display:none;padding:.8rem 1.2rem;border-left:2px solid var(--rose);background:rgba(196,127,106,.06);font-size:.82rem;color:var(--text);line-height:1.7;margin-bottom:1rem"></div>'
-  + '<div class="sp-cta-box">'
-  + '<div class="sp-cta-title">Need More Protein?</div>'
-  + '<div class="sp-cta-sub">Get a supplement stack to fill your protein gap efficiently.</div>'
-  + '<button class="btn-primary" onclick="sfNavigate(\'\')" style="margin:0 auto">Build My Stack</button>'
+  // All brands grid initially
+  + '<div id="brandGrid">'
+  + '<div style="font-family:\'DM Mono\',monospace;font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem">All Brands in Database (' + BRAND_DB.length + ')</div>'
+  + '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.6rem">'
+  + BRAND_DB.map(function(b) {
+      return '<div onclick="sfShowBrand(\'' + b.name.replace(/'/g,"\\'") + '\')" style="padding:.7rem 1rem;border:1px solid rgba(201,168,76,.1);cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:all .2s" onmouseover="this.style.borderColor=\'rgba(201,168,76,.4)\'" onmouseout="this.style.borderColor=\'rgba(201,168,76,.1)\'">'
+      + '<span style="font-size:.85rem;color:var(--text)">' + b.name + '</span>'
+      + '<span style="font-family:\'DM Mono\',monospace;font-size:.65rem;font-weight:700;color:' + b.color + '">' + b.grade + '</span>'
+      + '</div>';
+    }).join('')
+  + '</div></div>'
+
+  // Disclaimer
+  + '<div class="sp-callout" style="margin-top:1.5rem">'
+  + '<div class="sp-callout-label">&#9432; Disclaimer</div>'
+  + '<div class="sp-callout-text">Data based on publicly available certification information. Certifications may change — always verify on the brand\'s official website. This is not a substitute for official FSSAI verification. <a href="https://foscos.fssai.gov.in" target="_blank" style="color:var(--gold)">Check FSSAI licenses here &#8594;</a></div>'
   + '</div>'
   + '</div>';
 }
 
-window.calcProteinTotal = function(){
+window.sfBrandSearch = function(query) {
+  var q = query.trim().toLowerCase();
+  var grid = document.getElementById('brandGrid');
+  var res  = document.getElementById('brandResults');
+  if (!q) { if(grid) grid.style.display='block'; if(res) res.innerHTML=''; return; }
+  if(grid) grid.style.display='none';
+
+  var matches = BRAND_DB.filter(function(b) {
+    return b.name.toLowerCase().includes(q);
+  });
+
+  if (!matches.length) {
+    res.innerHTML = '<div style="padding:2rem;text-align:center;font-family:\'DM Mono\',monospace;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Brand not found in database. Search with exact brand name.</div>';
+    return;
+  }
+  res.innerHTML = matches.map(function(b) { return sfBrandCard(b); }).join('');
+};
+
+window.sfShowBrand = function(name) {
+  var brand = BRAND_DB.find(function(b) { return b.name === name; });
+  if (!brand) return;
+  var inp = document.getElementById('brandSearch');
+  if(inp) { inp.value = brand.name; }
+  var grid = document.getElementById('brandGrid');
+  var res  = document.getElementById('brandResults');
+  if(grid) grid.style.display='none';
+  if(res)  res.innerHTML = sfBrandCard(brand);
+  if(res)  res.scrollIntoView({behavior:'smooth',block:'nearest'});
+};
+
+function sfBrandCard(b) {
+  var gradeDesc = b.grade==='A+' ? 'Excellent — Highly Recommended' :
+                  b.grade==='A'  ? 'Good — Recommended' :
+                  b.grade==='A-' ? 'Good — Generally Reliable' :
+                  b.grade==='B+' ? 'Acceptable — Use with Awareness' :
+                  b.grade==='B'  ? 'Basic — Check Alternatives' : 'Caution';
+
+  return '<div style="border:1px solid rgba(201,168,76,.2);padding:1.5rem;margin-bottom:1rem;background:var(--bg2)">'
+
+  // Header
+  + '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.2rem;flex-wrap:wrap;gap:.5rem">'
+  + '<div>'
+  + '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.6rem;font-weight:300;color:var(--cream)">' + b.name + '</div>'
+  + '<div style="font-family:\'DM Mono\',monospace;font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:.2rem">' + (b.indiaLocal ? '&#127470;&#127475; Indian Brand' : '&#127758; International Brand') + '</div>'
+  + '</div>'
+  + '<div style="text-align:center;padding:.6rem 1.2rem;border:2px solid ' + b.color + ';background:rgba(0,0,0,.2)">'
+  + '<div style="font-family:\'Cormorant Garamond\',serif;font-size:2.5rem;font-weight:400;color:' + b.color + ';line-height:1">' + b.grade + '</div>'
+  + '<div style="font-family:\'DM Mono\',monospace;font-size:.45rem;letter-spacing:.08em;text-transform:uppercase;color:' + b.color + ';margin-top:.2rem">Safety Grade</div>'
+  + '</div></div>'
+
+  // Grade description
+  + '<div style="font-family:\'DM Mono\',monospace;font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;color:' + b.color + ';margin-bottom:1rem">' + gradeDesc + '</div>'
+
+  // Certifications
+  + '<div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.2rem">'
+  + b.certifications.map(function(cert) {
+      return '<span style="font-family:\'DM Mono\',monospace;font-size:.5rem;letter-spacing:.06em;text-transform:uppercase;padding:.2rem .6rem;border:1px solid rgba(52,211,153,.3);color:#34d399">&#10003; ' + cert + '</span>';
+    }).join('')
+  + '</div>'
+
+  // Key checks
+  + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:1.2rem">'
+  + sfCheckItem('FSSAI Certified', b.fssai)
+  + sfCheckItem('Third-Party Tested', b.thirdParty)
+  + '</div>'
+
+  // Pros
+  + '<div style="margin-bottom:.8rem">'
+  + '<div style="font-family:\'DM Mono\',monospace;font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.4rem">What\'s Good</div>'
+  + b.pros.map(function(p){ return '<div style="font-size:.8rem;color:var(--muted);padding:.2rem 0;padding-left:.8rem;border-left:2px solid #34d399;margin-bottom:.2rem">'+p+'</div>'; }).join('')
+  + '</div>'
+
+  // Cons
+  + '<div style="margin-bottom:1rem">'
+  + '<div style="font-family:\'DM Mono\',monospace;font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;color:var(--rose);margin-bottom:.4rem">Watch Out For</div>'
+  + b.cons.map(function(p){ return '<div style="font-size:.8rem;color:var(--muted);padding:.2rem 0;padding-left:.8rem;border-left:2px solid var(--rose);margin-bottom:.2rem">'+p+'</div>'; }).join('')
+  + '</div>'
+
+  // Verdict
+  + '<div style="padding:.9rem 1.1rem;background:rgba(201,168,76,.06);border-left:3px solid var(--gold)">'
+  + '<div style="font-family:\'DM Mono\',monospace;font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem">&#127919; Verdict</div>'
+  + '<div style="font-size:.85rem;color:var(--text);line-height:1.7">' + b.verdict + '</div>'
+  + '</div>'
+  + '</div>';
+}
+
+function sfCheckItem(label, ok) {
+  return '<div style="display:flex;align-items:center;gap:.5rem;padding:.5rem .7rem;background:rgba(201,168,76,.03);border:1px solid rgba(201,168,76,.08)">'
+  + '<span style="font-size:.9rem">' + (ok ? '&#9989;' : '&#10060;') + '</span>'
+  + '<span style="font-family:\'DM Mono\',monospace;font-size:.5rem;letter-spacing:.06em;text-transform:uppercase;color:' + (ok ? 'var(--cream)' : 'var(--muted)') + '">' + label + '</span>'
+  + '</div>';
+}
+
+
+// ════════════════════════════════════════════════════════════════
+// FEATURE 2: INDIAN FOOD PROTEIN CALCULATOR (Enhanced)
+// Route: tools/protein-builder (already exists — enhancing)
+// ════════════════════════════════════════════════════════════════
+
+var INDIAN_FOODS = [
+  // Eggs & Dairy
+  {id:'eggs',      name:'Eggs (whole)',      protein:6,   unit:'per egg',       emoji:'\uD83E\uDD5A', cat:'Eggs & Dairy'},
+  {id:'egg_white', name:'Egg Whites',        protein:3.5, unit:'per white',      emoji:'\uD83C\uDF73', cat:'Eggs & Dairy'},
+  {id:'paneer',    name:'Paneer',            protein:18,  unit:'per 100g',      emoji:'\uD83E\uDDC0', cat:'Eggs & Dairy'},
+  {id:'curd',      name:'Curd / Dahi',       protein:3.4, unit:'per 100g',      emoji:'\uD83E\uDEA3', cat:'Eggs & Dairy'},
+  {id:'milk',      name:'Milk (full fat)',   protein:3.4, unit:'per 100ml',     emoji:'\uD83E\uDD5B', cat:'Eggs & Dairy'},
+  {id:'cheese',    name:'Cheese (slice)',    protein:4,   unit:'per slice 25g', emoji:'\uD83E\uDDC0', cat:'Eggs & Dairy'},
+  // Meat & Fish
+  {id:'chicken',   name:'Chicken Breast',   protein:31,  unit:'per 100g',      emoji:'\uD83C\uDF57', cat:'Meat & Fish'},
+  {id:'chicken_leg',name:'Chicken Leg',     protein:22,  unit:'per 100g',      emoji:'\uD83C\uDF57', cat:'Meat & Fish'},
+  {id:'egg_boiled',name:'Boiled Egg',       protein:6,   unit:'per egg',       emoji:'\uD83E\uDD5A', cat:'Meat & Fish'},
+  {id:'fish',      name:'Fish (Rohu/Catla)',protein:20,  unit:'per 100g',      emoji:'\uD83D\uDC1F', cat:'Meat & Fish'},
+  {id:'tuna',      name:'Tuna (canned)',     protein:26,  unit:'per 100g',      emoji:'\uD83D\uDC1F', cat:'Meat & Fish'},
+  {id:'prawns',    name:'Prawns / Shrimp',  protein:24,  unit:'per 100g',      emoji:'\uD83E\uDD90', cat:'Meat & Fish'},
+  // Lentils & Legumes
+  {id:'dal',       name:'Dal (cooked)',      protein:9,   unit:'per 100g',      emoji:'\uD83C\uDF72', cat:'Lentils & Legumes'},
+  {id:'chana',     name:'Chana (cooked)',    protein:8.9, unit:'per 100g',      emoji:'\uD83C\uDF31', cat:'Lentils & Legumes'},
+  {id:'rajma',     name:'Rajma (cooked)',    protein:8.7, unit:'per 100g',      emoji:'\uD83C\uDF31', cat:'Lentils & Legumes'},
+  {id:'moong',     name:'Moong Sprouts',     protein:3,   unit:'per 100g',      emoji:'\uD83C\uDF31', cat:'Lentils & Legumes'},
+  {id:'soya',      name:'Soya Chunks (dry)', protein:52,  unit:'per 100g',      emoji:'\uD83C\uDF31', cat:'Lentils & Legumes'},
+  {id:'tofu',      name:'Tofu',             protein:8,   unit:'per 100g',      emoji:'\uD83E\uDDC6', cat:'Lentils & Legumes'},
+  // Grains
+  {id:'oats',      name:'Oats',             protein:13,  unit:'per 100g dry',  emoji:'\uD83C\uDF3E', cat:'Grains'},
+  {id:'quinoa',    name:'Quinoa (cooked)',   protein:4.4, unit:'per 100g',      emoji:'\uD83C\uDF3E', cat:'Grains'},
+  // Supplements
+  {id:'whey',      name:'Whey Protein',      protein:24,  unit:'per scoop 30g', emoji:'\uD83D\uDCAA', cat:'Supplements'},
+  {id:'isolate',   name:'Whey Isolate',      protein:27,  unit:'per scoop 30g', emoji:'\uD83D\uDCAA', cat:'Supplements'},
+  {id:'pea_protein',name:'Pea Protein',     protein:21,  unit:'per scoop 30g', emoji:'\uD83C\uDF31', cat:'Supplements'},
+];
+
+function sfPageProteinBuilder(el) {
+  document.title = 'Indian Food Protein Calculator | StackForge';
+  var p = (typeof aiProfile !== 'undefined' && aiProfile) ? aiProfile : {};
+  var weight = parseFloat(p.weight) || 70;
+  var goal   = p.goal || '';
+  var targetProtein = Math.round(weight * (goal==='weight_loss'?2.0 : goal==='muscle_building'||goal==='weight_gain'?2.2 : 1.6));
+
+  // Group foods by category
+  var cats = {};
+  INDIAN_FOODS.forEach(function(f){ if(!cats[f.cat]) cats[f.cat]=[]; cats[f.cat].push(f); });
+
+  var foodsHtml = Object.keys(cats).map(function(cat) {
+    return '<div style="margin-bottom:1.2rem">'
+    + '<div style="font-family:\'DM Mono\',monospace;font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem;padding-bottom:.3rem;border-bottom:1px solid rgba(201,168,76,.1)">' + cat + '</div>'
+    + cats[cat].map(function(food){
+        return '<div style="display:flex;align-items:center;gap:.7rem;padding:.4rem 0;cursor:pointer" onclick="this.querySelector(\'input\').click()">'
+        + '<input type="checkbox" class="pb-check" data-protein="'+food.protein+'" data-id="'+food.id+'" onchange="calcProteinTotal()" style="accent-color:var(--gold);width:16px;height:16px;flex-shrink:0;cursor:pointer">'
+        + '<span style="font-size:1.1rem;flex-shrink:0">'+food.emoji+'</span>'
+        + '<div style="flex:1">'
+        + '<div style="font-size:.86rem;color:var(--cream)">'+food.name+'</div>'
+        + '<div style="font-family:\'DM Mono\',monospace;font-size:.48rem;color:var(--muted)">'+food.protein+'g protein '+food.unit+'</div>'
+        + '</div>'
+        + '<input type="number" class="pb-qty" data-id="'+food.id+'" min="0" max="20" step="0.5" value="1" style="width:60px;background:var(--bg);border:1px solid rgba(201,168,76,.2);color:var(--gold);font-family:\'DM Mono\',monospace;font-size:.7rem;padding:.25rem .4rem;text-align:center" onclick="event.stopPropagation()" onchange="calcProteinTotal()" oninput="calcProteinTotal()">'
+        + '</div>';
+      }).join('')
+    + '</div>';
+  }).join('');
+
+  el.innerHTML = sfSubNav('Protein Calculator')
+  + '<div class="sp-body">'
+
+  + '<div class="sp-hero">'
+  + '<div class="sp-tag">Indian Foods</div>'
+  + '<h1 class="sp-title"><em>Protein</em> Calculator</h1>'
+  + '<p class="sp-p" style="margin-top:.6rem">Tick foods you eat daily. Adjust quantities. See your total protein and how far you are from your target.</p>'
+  + '</div>'
+
+  // Target + Total bar
+  + '<div style="background:rgba(201,168,76,.04);border:1px solid rgba(201,168,76,.12);padding:1rem 1.4rem;margin-bottom:1.4rem">'
+  + '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem;margin-bottom:.6rem">'
+  + '<div><div style="font-family:\'DM Mono\',monospace;font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Daily Target</div>'
+  + '<div style="font-family:\'Cormorant Garamond\',serif;font-size:2rem;font-weight:300;color:var(--gold)" id="pbTargetVal">'+targetProtein+'g</div>'
+  + '<div style="font-family:\'DM Mono\',monospace;font-size:.48rem;color:var(--muted)">'+(p.weight?p.weight+'kg × '+(goal==='muscle_building'||goal==='weight_gain'?'2.2':'1.6')+'g':'Set your weight in AI profile for custom target')+'</div></div>'
+  + '<div style="text-align:right"><div style="font-family:\'DM Mono\',monospace;font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">From Your Food</div>'
+  + '<div style="font-family:\'Cormorant Garamond\',serif;font-size:2rem;font-weight:300;color:var(--cream)" id="pbTotalVal">0g</div></div>'
+  + '</div>'
+  + '<div style="height:6px;background:rgba(201,168,76,.1);border-radius:3px;overflow:hidden"><div id="pbBar" style="height:100%;width:0%;background:var(--gold);transition:width .4s ease;border-radius:3px"></div></div>'
+  + '<div style="display:flex;justify-content:space-between;margin-top:.3rem">'
+  + '<div id="pbBarLabel" style="font-family:\'DM Mono\',monospace;font-size:.5rem;color:var(--muted)">0% of daily target</div>'
+  + '<div id="pbStatus" style="font-family:\'DM Mono\',monospace;font-size:.5rem;color:var(--muted)"></div>'
+  + '</div></div>'
+
+  // Gap alert
+  + '<div id="pbGap" style="display:none;padding:.8rem 1rem;border-left:2px solid var(--rose);background:rgba(196,127,106,.06);font-size:.82rem;color:var(--text);line-height:1.7;margin-bottom:1rem"></div>'
+
+  // Foods
+  + '<div style="margin-bottom:1.2rem">' + foodsHtml + '</div>'
+
+  + '<div class="sp-cta-box">'
+  + '<div class="sp-cta-title">Still Short on Protein?</div>'
+  + '<div class="sp-cta-sub">A Whey Protein supplement gives 24g per scoop. Get your personalized stack.</div>'
+  + '<button class="btn-primary" onclick="sfNavigate(\'\')" style="margin:0 auto">Build My Stack Free</button>'
+  + '</div>'
+  + '</div>';
+}
+
+window.calcProteinTotal = function() {
   var total = 0;
-  document.querySelectorAll('.pb-check:checked').forEach(function(cb){
+  document.querySelectorAll('.pb-check:checked').forEach(function(cb) {
     var qty = parseFloat(document.querySelector('.pb-qty[data-id="'+cb.dataset.id+'"]').value) || 1;
     total += parseFloat(cb.dataset.protein) * qty;
   });
   total = Math.round(total * 10) / 10;
+
   var targetEl = document.getElementById('pbTargetVal');
   var target   = parseFloat(targetEl ? targetEl.textContent : 140) || 140;
   var pct      = Math.min(100, Math.round((total/target)*100));
+
   var totalEl  = document.getElementById('pbTotalVal');
   var barEl    = document.getElementById('pbBar');
   var lblEl    = document.getElementById('pbBarLabel');
+  var statusEl = document.getElementById('pbStatus');
   var gapEl    = document.getElementById('pbGap');
+
   if(totalEl) totalEl.textContent = total + 'g';
-  if(barEl)   barEl.style.width = pct + '%';
-  if(barEl)   barEl.style.background = pct >= 100 ? '#34d399' : 'var(--gold)';
-  if(lblEl)   lblEl.textContent = pct + '% of daily target';
-  if(gapEl){
-    var gap = target - total;
-    if(gap > 0){
+  if(barEl) {
+    barEl.style.width = pct + '%';
+    barEl.style.background = pct >= 100 ? '#34d399' : pct >= 75 ? 'var(--gold)' : 'var(--rose)';
+  }
+  if(lblEl) lblEl.textContent = pct + '% of daily target';
+  if(statusEl) {
+    var gap = Math.round(target - total);
+    statusEl.textContent = gap > 0 ? gap + 'g more needed' : 'Target reached! ✓';
+    statusEl.style.color = gap > 0 ? 'var(--rose)' : '#34d399';
+  }
+  if(gapEl) {
+    var gap2 = target - total;
+    if(gap2 > 5) {
       gapEl.style.display = 'block';
-      gapEl.innerHTML = '<strong>Gap: '+Math.round(gap)+'g protein/day.</strong> To fill this, add: '
-        + (gap <= 30 ? '1 scoop Whey Protein (25g) + 1 egg.' : gap <= 60 ? '2 scoops Whey or 200g paneer + 2 eggs.' : '2 scoops Whey + 200g chicken or soya chunks.')
-        + ' OR use our Stack Creator for a complete plan.';
+      gapEl.innerHTML = '<strong>Gap: ' + Math.round(gap2) + 'g protein/day.</strong> To fill this easily: '
+        + (gap2 <= 25 ? '1 scoop Whey Protein (24g) added to your diet.' :
+           gap2 <= 50 ? '2 scoops Whey Protein OR 200g extra paneer + 2 eggs.' :
+           '2 scoops Whey + 200g chicken/soya chunks daily.')
+        + ' Or use our Stack Creator to build a complete plan.';
     } else {
       gapEl.style.display = 'none';
     }
   }
 };
+
 
 
 // ═══ MOVED SECTION SUB-PAGES ════════════════════════════════
