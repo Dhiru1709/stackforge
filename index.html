@@ -4992,6 +4992,7 @@ function doGenerate(goal, budget) {
       '<div><div class="sc-cost">&#8377;'+s.cost.toLocaleString("en-IN")+'</div><div class="sc-costl">/ month</div></div>',
       '<div class="sc-tags">'+s.tags.map(function(t){return '<span class="sc-tag">'+t+'</span>';}).join('')+'</div>',
       '</div>',
+      (AFFILIATE_URLS&&AFFILIATE_URLS[s.id]?'<a href="'+AFFILIATE_URLS[s.id]+'" target="_blank" rel="noopener" class="sc-buy-btn">&#128722; Check Current Price &#8594;</a>':''),
       '</div>'
     ].join('');
   }).join('');
