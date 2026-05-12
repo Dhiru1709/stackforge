@@ -3943,6 +3943,99 @@ input[type="range"]::-webkit-slider-thumb {
   .sfob-form-grid { grid-template-columns:1fr; }
 }
 
+
+/* ── Personalized Dashboard ──────────────────────────── */
+#sfDashboard { padding: var(--pad-section); }
+.dash-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.dash-stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: rgba(201,168,76,.08);
+  margin-bottom: 2.5rem;
+}
+.dash-stat {
+  background: var(--bg);
+  padding: 1.2rem 1.4rem;
+  text-align: center;
+}
+.dash-stat-n {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  font-weight: 300;
+  color: var(--cream);
+  line-height: 1;
+  margin-bottom: .3rem;
+}
+.dash-stat-l {
+  font-family: 'DM Mono', monospace;
+  font-size: .48rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.dash-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+.dash-col {
+  border: 1px solid rgba(201,168,76,.1);
+  background: var(--bg2);
+}
+.dash-col-head {
+  padding: 1rem 1.2rem;
+  border-bottom: 1px solid rgba(201,168,76,.08);
+}
+.dash-col-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: var(--cream);
+  margin-bottom: .2rem;
+}
+.dash-col-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: .48rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.dash-supp-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.dash-supp-card {
+  padding: .9rem 1.2rem;
+  border-bottom: 1px solid rgba(201,168,76,.06);
+  transition: background .2s;
+}
+.dash-supp-card:hover { background: rgba(201,168,76,.03); }
+.dash-supp-card:last-child { border-bottom: none; }
+.dash-workout-list { padding: .4rem 1.2rem; }
+.dash-day-card {
+  padding: .65rem 0;
+  border-bottom: 1px solid rgba(201,168,76,.06);
+}
+.dash-day-card:last-child { border-bottom: none; }
+@media (max-width: 1024px) {
+  .dash-grid { grid-template-columns: 1fr 1fr; }
+  .dash-stats-row { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 680px) {
+  .dash-grid { grid-template-columns: 1fr; }
+  .dash-stats-row { grid-template-columns: repeat(2, 1fr); }
+}
+
 </style>
 </head>
 <body>
@@ -3961,6 +4054,7 @@ input[type="range"]::-webkit-slider-thumb {
   <a href="#hero" class="nav-logo notranslate" translate="no">STACK<span>FORGE</span></a>
 
   <ul class="nav-links">
+    <li id="navMyPlan" style="display:none"><a href="#sfDashboard" style="color:var(--gold)">⚡ My Plan</a></li>
     <li><a href="#about">About</a></li>
     <li><a href="#creator">Stack</a></li>
     <li><a href="#bmi">BMI</a></li>
@@ -4081,6 +4175,10 @@ input[type="range"]::-webkit-slider-thumb {
     <div class="hst"><div class="hst-n" data-target="0" data-suffix="&#8377;">0</div><div class="hst-l">Cost to You</div></div>
   </div>
 </section>
+<!-- PERSONALIZED DASHBOARD -->
+<section id="sfDashboard" class="sec-dark" style="display:none;padding:4rem 4rem">
+</section>
+
 
 <!-- MARQUEE -->
 <div class="marquee-section">
@@ -7991,6 +8089,7 @@ document.addEventListener('DOMContentLoaded', function() {
   initScroll();
   showTst(0);
   if(typeof sfInitOnboarding==='function') sfInitOnboarding();
+  if(typeof sfBuildDashboard==='function') sfBuildDashboard();
   animateCounters();
   initStickyBar();
   initRipples();
@@ -9672,6 +9771,8 @@ window.sfOBFinish = function() {
 
   // Personalize hero
   sfPersonalizeHero(_sfOBData);
+  // Build dashboard
+  setTimeout(function(){ if(typeof sfBuildDashboard==='function') sfBuildDashboard(); }, 300);
 
   // Scroll to creator and auto-generate
   var creator = document.getElementById('creator');
@@ -9743,5 +9844,241 @@ window.sfOBFinish = function() {
   </div>
 </div>
 
+<script>
+// ════════════════════════════════════════════════════════════════
+// PERSONALIZED DASHBOARD
+// ════════════════════════════════════════════════════════════════
+
+function sfBuildDashboard() {
+  var profile = sfGetProfile();
+  var dash = document.getElementById('sfDashboard');
+  if (!dash) return;
+
+  if (!profile || !profile.goal) {
+    dash.style.display = 'none';
+    return;
+  }
+
+  dash.style.display = 'block';
+
+  var goal = profile.goal;
+  var stats = (profile.bmi && profile.tdee) ? profile : sfCalcStats(
+    profile.weight || 70,
+    profile.height || 175,
+    profile.age    || 25,
+    profile.gender || 'male',
+    profile.activity || 1.55
+  );
+
+  var bmiColor   = stats.bmiCat === 'normal'      ? '#34d399' :
+                   stats.bmiCat === 'underweight'  ? 'var(--gold)' :
+                   stats.bmiCat === 'overweight'   ? '#fb923c' : 'var(--rose)';
+  var bmiLabel   = stats.bmiCat === 'normal'      ? 'Healthy Weight' :
+                   stats.bmiCat === 'underweight'  ? 'Underweight' :
+                   stats.bmiCat === 'overweight'   ? 'Overweight' : 'Obese';
+  var goalLabels = {
+    weight_gain:'Weight Gain', muscle_building:'Muscle Building',
+    weight_loss:'Weight Loss', endurance:'Endurance',
+    yoga:'Yoga & Wellness', zumba:'Zumba & Cardio'
+  };
+  var goalEmoji  = {
+    weight_gain:'💪', muscle_building:'🏋️', weight_loss:'🔥',
+    endurance:'🏃', yoga:'🧘', zumba:'🎵'
+  };
+
+  // Generate smart stack
+  var stack  = sfSmartSelectStack(goal, profile.budget || 2000, stats) || [];
+  var budget = profile.budget || 2000;
+
+  // Workout snippets per goal
+  var workoutSnippets = {
+    weight_gain: [
+      { day:'Mon', name:'Heavy Compound Push', moves:'Bench Press 4×5 · OHP 3×6 · Incline DB 3×8' },
+      { day:'Tue', name:'Heavy Compound Pull', moves:'Deadlift 4×4 · Barbell Row 4×6 · Pull-ups 3×8' },
+      { day:'Wed', name:'Rest / Light Cardio', moves:'20 min walk · Stretching' },
+      { day:'Thu', name:'Legs & Core', moves:'Squat 4×5 · Romanian DL 3×8 · Leg Press 3×10' },
+      { day:'Fri', name:'Upper Hypertrophy', moves:'DB Press 4×10 · Cable Row 4×10 · Lateral Raise 3×12' }
+    ],
+    muscle_building: [
+      { day:'Mon', name:'Chest & Triceps', moves:'Bench 4×8 · Cable Fly 3×12 · Tricep Dips 3×10' },
+      { day:'Tue', name:'Back & Biceps', moves:'Pull-ups 4×8 · Cable Row 3×12 · Hammer Curl 3×10' },
+      { day:'Wed', name:'Legs', moves:'Squat 4×8 · Leg Press 3×12 · Leg Curl 3×12' },
+      { day:'Thu', name:'Shoulder & Abs', moves:'OHP 4×8 · Lateral Raise 3×12 · Plank 3×45s' },
+      { day:'Fri', name:'Arms & Chest', moves:'Incline DB 3×10 · Bicep Curl 3×12 · Skull Crusher 3×10' }
+    ],
+    weight_loss: [
+      { day:'Mon', name:'Full Body Circuits', moves:'Burpees 3×15 · DB Squat 3×15 · Push-ups 3×15' },
+      { day:'Tue', name:'HIIT Cardio', moves:'20 min: 30s sprint / 30s walk' },
+      { day:'Wed', name:'Upper Body', moves:'Push-ups 4×12 · DB Row 3×12 · Shoulder Press 3×12' },
+      { day:'Thu', name:'LISS Cardio', moves:'35 min brisk walk or cycling' },
+      { day:'Fri', name:'Lower Body + Core', moves:'Lunges 3×12 · Glute Bridge 3×15 · Plank 3×45s' }
+    ],
+    endurance: [
+      { day:'Mon', name:'Easy Run', moves:'30–40 min at conversational pace' },
+      { day:'Tue', name:'Intervals', moves:'8×400m at 80% effort · 90s rest between' },
+      { day:'Wed', name:'Cross Training', moves:'Cycling 45 min or Swimming' },
+      { day:'Thu', name:'Tempo Run', moves:'25 min at comfortably hard pace' },
+      { day:'Fri', name:'Strength + Core', moves:'Deadlift 3×8 · Lunge 3×12 · Core circuit 15 min' }
+    ],
+    yoga: [
+      { day:'Mon', name:'Surya Namaskar', moves:'12 rounds · 5 min pranayama' },
+      { day:'Tue', name:'Hip Openers', moves:'Pigeon · Lizard · Butterfly · 30 min' },
+      { day:'Wed', name:'Core & Balance', moves:'Boat pose · Warrior III · Side plank' },
+      { day:'Thu', name:'Restorative', moves:'Yin yoga · 10 min meditation' },
+      { day:'Fri', name:'Full Flow', moves:'45 min Vinyasa flow · Savasana' }
+    ],
+    zumba: [
+      { day:'Mon', name:'Zumba Class / Video', moves:'45 min full session · High energy' },
+      { day:'Tue', name:'Strength Cardio', moves:'Jump squats 3×15 · Mountain climbers 3×20' },
+      { day:'Wed', name:'Rest or Light Walk', moves:'20–30 min walk · Stretch' },
+      { day:'Thu', name:'Zumba Class / Video', moves:'45 min full session' },
+      { day:'Fri', name:'Core & Toning', moves:'Plank 3×45s · Crunches 3×20 · Glute bridge 3×15' }
+    ]
+  };
+
+  // Diet snippets per goal
+  var dietSnippets = {
+    weight_gain: {
+      target: Math.round(stats.tdee + 400),
+      tip: 'Eat in a 300–500 kcal surplus daily. Focus on calorie-dense foods — peanut butter, paneer, whole milk, rice.',
+      meals: ['Breakfast: Oats + milk + banana + 2 eggs', 'Lunch: Rice + dal + paneer + curd', 'Snack: Mass gainer shake or peanut butter + bread', 'Dinner: Roti + chicken/soya + salad']
+    },
+    muscle_building: {
+      target: Math.round(stats.tdee + 200),
+      tip: 'Slight calorie surplus (200 kcal). ' + stats.proteinTarget + 'g protein/day is your #1 priority.',
+      meals: ['Breakfast: 4 eggs + oats + milk', 'Lunch: Chicken rice bowl + salad', 'Snack: Whey shake + banana', 'Dinner: Paneer + roti + dal + veggies']
+    },
+    weight_loss: {
+      target: Math.round(stats.tdee - 400),
+      tip: '300–500 kcal deficit. High protein to preserve muscle — ' + stats.proteinTarget + 'g/day minimum.',
+      meals: ['Breakfast: 3 egg whites + 1 whole egg + veggies', 'Lunch: Grilled chicken + salad + small rice', 'Snack: Whey isolate + apple', 'Dinner: Fish/tofu + roasted veggies + dal']
+    },
+    endurance: {
+      target: Math.round(stats.tdee + 100),
+      tip: 'Carbs are your fuel. Load up before long runs. Electrolytes during runs over 45 minutes.',
+      meals: ['Pre-run: Banana + peanut butter toast', 'Lunch: Rice + dal + curd + veggies', 'Post-run: Whey shake + rice', 'Dinner: Roti + chicken + salad']
+    },
+    yoga: {
+      target: stats.tdee,
+      tip: 'Light, clean foods. Avoid heavy meals within 2 hours of practice. Anti-inflammatory focus.',
+      meals: ['Breakfast: Fruit bowl + nuts + green tea', 'Lunch: Khichdi + curd + veggies', 'Snack: Coconut water + handful nuts', 'Dinner: Dal soup + roti + light salad']
+    },
+    zumba: {
+      target: Math.round(stats.tdee - 200),
+      tip: 'Light carbs before class for energy. Protein + electrolytes after. Stay well hydrated.',
+      meals: ['Pre-class: Banana or toast 45 min before', 'Lunch: Rice + dal + chicken/paneer', 'Post-class: Whey shake + coconut water', 'Dinner: Roti + salad + eggs/tofu']
+    }
+  };
+
+  var workout = workoutSnippets[goal] || workoutSnippets.muscle_building;
+  var diet    = dietSnippets[goal]    || dietSnippets.muscle_building;
+
+  // Build stack HTML
+  var stackHtml = stack.length ? stack.map(function(s) {
+    var affLink = (typeof AFFILIATE_URLS !== 'undefined' && AFFILIATE_URLS[s.id]) ? AFFILIATE_URLS[s.id] : '#';
+    var evColor = s.evidenceLevel === 'strong' ? '#34d399' : s.evidenceLevel === 'good' ? 'var(--gold)' : 'var(--gold2)';
+    return '<div class="dash-supp-card">'
+      + '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.5rem">'
+      + '<div style="font-family:\'DM Mono\',monospace;font-size:.44rem;letter-spacing:.06em;text-transform:uppercase;color:' + evColor + ';padding:.1rem .4rem;border:1px solid ' + evColor + '">' + (s.evidenceLevel || 'moderate') + ' evidence</div>'
+      + '</div>'
+      + '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.1rem;font-weight:400;color:var(--cream);margin-bottom:.15rem">' + s.name + '</div>'
+      + '<div style="font-family:\'DM Mono\',monospace;font-size:.48rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:.4rem">' + s.category + '</div>'
+      + '<div style="font-size:.75rem;color:var(--muted);margin-bottom:.4rem">' + s.dose + ' — ' + s.timing + '</div>'
+      + (s.brandRec ? '<div style="font-family:\'DM Mono\',monospace;font-size:.48rem;color:var(--muted);margin-bottom:.4rem">📍 ' + s.brandRec + '</div>' : '')
+      + (s.priceMin ? '<div style="font-family:\'DM Mono\',monospace;font-size:.5rem;color:var(--gold2);margin-bottom:.5rem">~₹' + s.priceMin.toLocaleString('en-IN') + ' – ₹' + s.priceMax.toLocaleString('en-IN') + ' /mo</div>' : '')
+      + '<a href="' + affLink + '" target="_blank" rel="noopener" class="sc-buy-btn">🛒 Check Current Price →</a>'
+      + '</div>';
+  }).join('') : '<div style="color:var(--muted);font-size:.8rem;padding:1rem">No supplements found for this budget. Try increasing your budget.</div>';
+
+  // Build workout HTML
+  var workoutHtml = workout.map(function(w) {
+    return '<div class="dash-day-card">'
+      + '<div style="font-family:\'DM Mono\',monospace;font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem">' + w.day + '</div>'
+      + '<div style="font-family:\'Cormorant Garamond\',serif;font-size:.95rem;color:var(--cream);margin-bottom:.2rem">' + w.name + '</div>'
+      + '<div style="font-size:.72rem;color:var(--muted);line-height:1.6">' + w.moves + '</div>'
+      + '</div>';
+  }).join('');
+
+  // Build diet HTML
+  var dietHtml = diet.meals.map(function(m) {
+    var parts = m.split(':');
+    return '<div style="display:flex;gap:.5rem;padding:.45rem 0;border-bottom:1px solid rgba(201,168,76,.06)">'
+      + '<div style="font-family:\'DM Mono\',monospace;font-size:.48rem;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);flex-shrink:0;padding-top:.1rem;min-width:60px">' + (parts[0] || '') + '</div>'
+      + '<div style="font-size:.8rem;color:var(--muted)">' + (parts[1] || m) + '</div>'
+      + '</div>';
+  }).join('');
+
+  dash.innerHTML = [
+    // Header
+    '<div class="section-inner">',
+    '<div class="dash-header">',
+    '<div>',
+    '<div class="section-tag">' + (goalEmoji[goal] || '') + ' ' + (goalLabels[goal] || 'Your Plan') + '</div>',
+    '<h2 class="section-heading">' + (profile.name ? profile.name + "'s" : 'Your') + ' <em>Personal Plan</em></h2>',
+    '<p class="section-sub">Generated based on your body stats and goal. Updated every time you change your profile.</p>',
+    '</div>',
+    '<button class="abtn" onclick="sfShowOnboarding()" style="flex-shrink:0;align-self:flex-start;max-width:180px;font-size:.52rem">✏️ Update Profile</button>',
+    '</div>',
+
+    // Stats row
+    '<div class="dash-stats-row">',
+    '<div class="dash-stat"><div class="dash-stat-n" style="color:' + bmiColor + '">' + stats.bmi + '</div><div class="dash-stat-l">BMI · ' + bmiLabel + '</div></div>',
+    '<div class="dash-stat"><div class="dash-stat-n">' + stats.tdee.toLocaleString('en-IN') + '</div><div class="dash-stat-l">Daily Calories</div></div>',
+    '<div class="dash-stat"><div class="dash-stat-n" style="color:var(--gold)">' + stats.proteinTarget + 'g</div><div class="dash-stat-l">Protein Target / day</div></div>',
+    '<div class="dash-stat"><div class="dash-stat-n">₹' + budget.toLocaleString('en-IN') + '</div><div class="dash-stat-l">Monthly Budget</div></div>',
+    '</div>',
+
+    // 3 columns: Stack | Workout | Diet
+    '<div class="dash-grid">',
+
+    // Stack
+    '<div class="dash-col">',
+    '<div class="dash-col-head"><div class="dash-col-title">💊 Your Stack</div><div class="dash-col-sub">' + stack.length + ' supplements · within ₹' + budget.toLocaleString('en-IN') + '/mo</div></div>',
+    '<div class="dash-supp-grid">' + stackHtml + '</div>',
+    '</div>',
+
+    // Workout
+    '<div class="dash-col">',
+    '<div class="dash-col-head"><div class="dash-col-title">🏋️ Weekly Workout</div><div class="dash-col-sub">5-day plan for ' + (goalLabels[goal] || goal) + '</div></div>',
+    '<div class="dash-workout-list">' + workoutHtml + '</div>',
+    '</div>',
+
+    // Diet
+    '<div class="dash-col">',
+    '<div class="dash-col-head"><div class="dash-col-title">🥗 Diet Guide</div>',
+    '<div class="dash-col-sub">Target: ' + diet.target.toLocaleString('en-IN') + ' kcal/day · ' + stats.proteinTarget + 'g protein</div></div>',
+    '<div style="padding:.7rem .9rem;background:rgba(201,168,76,.04);border-left:2px solid rgba(201,168,76,.25);margin-bottom:.8rem;font-size:.78rem;color:var(--muted);line-height:1.7">' + diet.tip + '</div>',
+    '<div>' + dietHtml + '</div>',
+    '</div>',
+    '</div>', // dash-grid
+
+    // Protein gap
+    '<div class="dash-protein-gap" id="dashProteinGap"></div>',
+
+    '</div>' // section-inner
+  ].join('');
+
+  // Protein gap analysis
+  var suppProtein = stack.filter(function(s) {
+    return ['whey','isolate','casein','mass'].indexOf(s.id) !== -1;
+  }).length * 24;
+  var gap = stats.proteinTarget - suppProtein;
+  var gapEl = document.getElementById('dashProteinGap');
+  if (gapEl && gap > 0) {
+    gapEl.innerHTML = '<div style="margin-top:1rem;padding:.7rem 1rem;background:rgba(201,168,76,.04);border:1px solid rgba(201,168,76,.1);font-family:DM Mono,monospace;font-size:.52rem;letter-spacing:.06em;color:var(--muted);line-height:1.8">'
+      + '💡 Your stack provides ~' + suppProtein + 'g protein from supplements. You need ' + gap + 'g more from food daily. '
+      + 'Focus on: eggs, paneer, chicken, dal, curd.'
+      + '</div>';
+  }
+
+  // Show My Plan nav link
+  var myPlanLink = document.getElementById('navMyPlan');
+  if (myPlanLink) myPlanLink.style.display = 'block';
+}
+
+// Called after onboarding finish and on page load for returning users
+window.sfRefreshDashboard = sfBuildDashboard;
+
+</script>
 </body>
 </html>
