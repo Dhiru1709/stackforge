@@ -332,8 +332,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
 .sc-dose-v{font-size:.78rem;color:var(--gold2);font-weight:400;margin-top:.15rem}
 .sc-bene{font-size:.8rem;line-height:1.75;color:var(--muted);margin-bottom:.9rem}
 .sc-footer{display:flex;align-items:center;justify-content:space-between;padding-top:.75rem;border-top:1px solid var(--bd2)}
-.sc-cost{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--cream)}
-.sc-costl{font-family:'DM Mono',monospace;font-size:.5rem;color:var(--muted);text-transform:uppercase}
+.sc-cost{display:none}
+.sc-costl{display:none}
 .sc-tags{display:flex;gap:.25rem;flex-wrap:wrap}
 .sc-tag{font-family:'DM Mono',monospace;font-size:.48rem;letter-spacing:.08em;text-transform:uppercase;padding:.12rem .45rem;border:1px solid var(--bd2);color:var(--muted)}
 .stack-banner{background:var(--bg3);border:1px solid var(--bd2);padding:1.2rem 1.8rem;display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem}
@@ -3865,6 +3865,84 @@ input[type="range"]::-webkit-slider-thumb {
   .bmi-form-grid { grid-template-columns: 1fr; }
 }
 
+
+.sc-evidence {
+  font-family: 'DM Mono', monospace;
+  font-size: .44rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: .15rem .5rem;
+  border: 1px solid rgba(201,168,76,.2);
+  color: var(--gold2);
+}
+
+
+.sc-evidence-strong{font-family:'DM Mono',monospace;font-size:.46rem;letter-spacing:.08em;text-transform:uppercase;padding:.15rem .5rem;border:1px solid rgba(52,211,153,.4);color:#34d399}
+.sc-evidence-good{font-family:'DM Mono',monospace;font-size:.46rem;letter-spacing:.08em;text-transform:uppercase;padding:.15rem .5rem;border:1px solid rgba(201,168,76,.4);color:var(--gold)}
+.sc-evidence-moderate{font-family:'DM Mono',monospace;font-size:.46rem;letter-spacing:.08em;text-transform:uppercase;padding:.15rem .5rem;border:1px solid rgba(232,208,154,.3);color:var(--gold2)}
+.sc-evidence-limited{font-family:'DM Mono',monospace;font-size:.46rem;letter-spacing:.08em;text-transform:uppercase;padding:.15rem .5rem;border:1px solid rgba(107,114,128,.3);color:var(--muted)}
+
+
+/* ── Onboarding Modal ────────────────────────────────────── */
+#sfOnboardModal.active { opacity:1!important; pointer-events:auto!important; }
+.sfob-step-dot {
+  width:8px; height:8px; border-radius:50%;
+  background:rgba(201,168,76,.2);
+  transition:background .3s;
+}
+.sfob-step-dot.active { background:var(--gold); }
+.sfob-step { animation:sfobIn .3s ease; }
+@keyframes sfobIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+.sfob-title {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1.4rem,4vw,2rem);
+  font-weight:300; color:var(--cream);
+  line-height:1.2; margin:.4rem 0;
+}
+.sfob-title em { font-style:italic; color:var(--gold2); }
+.sfob-sub { font-size:.84rem; color:var(--muted); line-height:1.7; margin-bottom:.8rem; }
+.sfob-step-label {
+  font-family:'DM Mono',monospace;
+  font-size:.52rem; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--muted);
+}
+.sfob-goals {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:.5rem; margin:.8rem 0;
+}
+.sfob-goal-card {
+  display:flex; align-items:center; gap:.6rem;
+  padding:.7rem .9rem;
+  border:1px solid rgba(201,168,76,.12);
+  cursor:pointer; transition:all .2s;
+  background:transparent;
+}
+.sfob-goal-card:hover { border-color:rgba(201,168,76,.35); background:rgba(201,168,76,.04); }
+.sfob-goal-card.active { border-color:var(--gold); background:rgba(201,168,76,.08); }
+.sfob-goal-icon { font-size:1.2rem; flex-shrink:0; }
+.sfob-goal-label { font-family:'DM Mono',monospace; font-size:.58rem; letter-spacing:.06em; text-transform:uppercase; color:var(--cream); }
+.sfob-form-grid { display:grid; grid-template-columns:1fr 1fr; gap:.7rem; margin:.5rem 0; }
+.sfob-next:disabled { opacity:.4; cursor:not-allowed; }
+.sfob-stats-row {
+  display:flex; justify-content:space-around;
+  padding:.8rem; background:rgba(201,168,76,.04);
+  border:1px solid rgba(201,168,76,.1); margin:.6rem 0;
+}
+.sfob-stat { text-align:center; }
+.sfob-stat-n {
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.6rem; font-weight:300; color:var(--cream); line-height:1;
+}
+.sfob-stat-l {
+  font-family:'DM Mono',monospace;
+  font-size:.48rem; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--muted); margin-top:.2rem;
+}
+@media (max-width:480px) {
+  .sfob-goals { grid-template-columns:1fr; }
+  .sfob-form-grid { grid-template-columns:1fr; }
+}
+
 </style>
 </head>
 <body>
@@ -3988,7 +4066,7 @@ input[type="range"]::-webkit-slider-thumb {
       <span class="outlined">Stack</span>
     </h1>
 
-    <p class="hero-sub">Goal-matched supplement plans built on 700+ peer-reviewed studies. Plus AI coach, BMI calculator, workout plans and diet guide.</p>
+    <p class="hero-sub">Goal-matched supplement plans built on ISSN position stands and published research. Plus AI coach, BMI calculator, workout plans and diet guide.</p>
 
     <div class="hero-actions">
       <a href="#creator" class="btn-primary">&#9889; Build My Free Stack</a>
@@ -4108,7 +4186,7 @@ input[type="range"]::-webkit-slider-thumb {
         <div class="about-stats">
           <div class="about-stat">
             <div class="about-stat-n">14+</div>
-            <div class="about-stat-l">Studies Referenced</div>
+            <div class="about-stat-l">Supplements Covered</div>
           </div>
           <div class="about-stat">
             <div class="about-stat-n">6</div>
@@ -4505,18 +4583,23 @@ input[type="range"]::-webkit-slider-thumb {
 
 <!-- TESTIMONIALS -->
 <section id="testimonials" class="tst-section">
-  <div class="section-tag" style="justify-content:center">Real Results</div>
-  <div class="quote-mark">"</div>
-  <div class="tst-quote" id="testimonialQuote">Finally a tool that recommends affordable supplements, not just the most expensive ones. Got a 3-product stack for &#8377;1,800 that actually changed my body in 3 months.</div>
-  <div class="tst-author" id="testimonialAuthor">RAHUL SHARMA</div>
-  <div class="tst-role" id="testimonialRole">Muscle Building &mdash; 6 months</div>
-  <div class="tst-dots">
-    <div class="tdot active" onclick="showTst(0)"></div>
-    <div class="tdot" onclick="showTst(1)"></div>
-    <div class="tdot" onclick="showTst(2)"></div>
-  </div>
+  <div style="max-width:760px;margin:0 auto;text-align:center">
 
-  <p style="text-align:center;font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:.5rem 1rem;opacity:.7">User experiences. Individual results vary based on diet, training consistency and genetics.</p></section>
+    <div class="section-tag" style="justify-content:center">User Feedback</div>
+    <h2 class="section-heading">What <em>Users Say</em></h2>
+
+    <div style="font-size:3rem;color:rgba(201,168,76,.25);line-height:1;margin-bottom:1rem">&ldquo;</div>
+
+    <p class="tst-quote" id="testimonialQuote" style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-style:italic;color:var(--cream);line-height:1.7;max-width:620px;margin:0 auto 1.2rem"></p>
+
+    <div class="tst-author" id="testimonialAuthor" style="font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)"></div>
+    <div class="tst-role" id="testimonialRole" style="font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:.2rem"></div>
+
+    <div style="display:flex;justify-content:center;gap:.5rem;margin-top:1.5rem" id="tstDots"></div>
+
+    <p style="margin-top:1.5rem;font-family:'DM Mono',monospace;font-size:.48rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);opacity:.6">User experiences shared with permission. Results vary based on individual effort, diet and training. Supplement efficacy data sourced from ISSN position stands, Rawson &amp; Volek (2003), Cermak et al. (2012) and Hobson et al. (2012).</p>
+  </div>
+</section>
 
 <!-- FAQ -->
 <section id="faq" class="sec-dark">
@@ -4742,20 +4825,20 @@ input[type="range"]::-webkit-slider-thumb {
 // DATA
 // ════════════════════════════════════════════════
 const SUPPLEMENTS = [
-  { id:'mass',priceRange:'₹800-1,800 /mo',name:'Mass Gainer',category:'Weight Gainer',dose:'75-100g (2 scoops)',timing:'Post-workout or with breakfast',benefit:'High-calorie formula that accelerates weight gain. 500-800 extra calories per serving — ideal for bulking phases.',cost:1400,priority:'must',tags:['Calorie Dense','Bulking'],goals:['weight_gain'],minBudget:500,icon:'<path d="M4 6h16M4 12h16M4 18h7"/>'},
-  { id:'whey',priceRange:'₹900-2,200 /mo',name:'Whey Protein',category:'Protein',dose:'25-30g (1 scoop)',timing:'30 minutes after workout',benefit:'Fast-absorbing protein that repairs muscle. Maintains muscle quality during weight gain so you build lean mass — not just fat.',cost:1200,priority:'must',tags:['Fast Absorb','Muscle Repair'],goals:['weight_gain','muscle_building','weight_loss'],minBudget:500,icon:'<path d="M8 6h8l2 4H6L8 6z"/><path d="M6 10v8a2 2 0 002 2h8a2 2 0 002-2v-8"/>'},
-  { id:'creatine',priceRange:'₹300-700 /mo',name:'Creatine Monohydrate',category:'Performance',dose:'5g daily',timing:'Any time daily — consistency is key',benefit:'Scientifically proven to increase strength and muscle volume. Enhances ATP production enabling heavier lifts and better performance.',cost:600,priority:'must',tags:['Science-Backed','Strength'],goals:['weight_gain','muscle_building'],minBudget:500,icon:'<path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/>'},
-  { id:'multivit',priceRange:'₹200-600 /mo',name:'Multivitamin',category:'Health',dose:'1 tablet daily',timing:'Take with breakfast',benefit:'Fills micronutrient gaps. Intense training demands extra vitamins — proper micronutrition dramatically improves recovery.',cost:400,priority:'must',tags:['Immunity','Recovery'],goals:['weight_gain','muscle_building','endurance','weight_loss','yoga','zumba'],minBudget:500,icon:'<circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>'},
-  { id:'omega3',priceRange:'₹250-700 /mo',name:'Omega-3 Fish Oil',category:'Health',dose:'2-3g EPA+DHA',timing:'Take with meals',benefit:'Maintains joint health — reduces inflammation from heavy lifting. An important but often-ignored supplement for longevity.',cost:350,priority:'nice',tags:['Joint Health','Anti-Inflammatory'],goals:['weight_gain','muscle_building','endurance','weight_loss','yoga','zumba'],minBudget:500,icon:'<path d="M18 6c-2 0-3.5 1-5 2.5C11.5 7 10 6 8 6 5 6 3 8 3 10s2 4 5 4c2 0 3.5-1 4.5-2"/>'},
-  { id:'zma',priceRange:'₹350-900 /mo',name:'ZMA (Zinc-Magnesium-B6)',category:'Recovery',dose:'3 capsules',timing:'30-60 minutes before sleep',benefit:'Improves deep sleep quality leading to 40% faster recovery. Supports natural testosterone levels overnight.',cost:500,priority:'nice',tags:['Sleep Quality','Testosterone'],goals:['weight_gain','muscle_building','yoga'],minBudget:1200,icon:'<path d="M3 12h18M3 6l9 6 9-6M3 18l9-6 9 6"/>'},
-  { id:'isolate',priceRange:'₹1,200-3,000 /mo',name:'Whey Isolate',category:'Protein',dose:'25g (1 scoop)',timing:'Immediately after workout',benefit:'Fastest absorbing protein — triggers maximum muscle protein synthesis in the critical 30-minute post-workout window.',cost:1800,priority:'must',tags:['Ultra-Pure','Fast Absorb'],goals:['muscle_building','weight_loss'],minBudget:1200,icon:'<path d="M8 6h8l2 4H6L8 6z"/><path d="M6 10v8a2 2 0 002 2h8a2 2 0 002-2v-8"/>'},
-  { id:'casein',priceRange:'₹1,000-2,500 /mo',name:'Casein Protein',category:'Protein',dose:'30g (1 scoop)',timing:'30 minutes before sleep',benefit:'Slow-release protein that supplies amino acids for 7-8 hours — prevents muscle breakdown completely overnight.',cost:1600,priority:'adv',tags:['Slow Release','Anti-Catabolic'],goals:['muscle_building','weight_gain'],minBudget:3000,icon:'<path d="M12 2c5.5 0 9 3 9 7s-3.5 7-9 7-9-3-9-7 3.5-7 9-7z"/>'},
-  { id:'bcaa',priceRange:'₹400-1,200 /mo',name:'BCAA 2:1:1',category:'Amino Acids',dose:'10g',timing:'During workout or fasted cardio',benefit:'Prevents muscle breakdown especially in fasted states. Leucine, Isoleucine, Valine ratio is optimized for muscle protein synthesis.',cost:800,priority:'nice',tags:['Anti-Catabolic','Intra-Workout'],goals:['muscle_building','endurance','zumba'],minBudget:1200,icon:'<path d="M12 2v20M2 12h20"/>'},
-  { id:'preworkout',priceRange:'₹500-1,500 /mo',name:'Pre-Workout',category:'Performance',dose:'1 scoop',timing:'20-30 minutes before workout',benefit:'Energy, focus and pump drastically improve. The Caffeine + Beta-Alanine + Citrulline combination doubles workout intensity.',cost:1200,priority:'nice',tags:['Energy','Focus','Pump'],goals:['muscle_building','endurance'],minBudget:2000,icon:'<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>'},
-  { id:'electro',priceRange:'₹300-700 /mo',name:'Electrolyte Mix',category:'Hydration',dose:'1 sachet in water',timing:'During and after workout',benefit:'Replaces Sodium, Potassium, and Magnesium lost through sweat. Eliminates cramps and keeps performance stable throughout training.',cost:450,priority:'must',tags:['Hydration','Anti-Cramp'],goals:['endurance','zumba','weight_loss'],minBudget:500,icon:'<path d="M12 2v10M12 22v-4"/>'},
-  { id:'beta_al',priceRange:'₹400-900 /mo',name:'Beta-Alanine',category:'Performance',dose:'3.2-4.8g',timing:'30 minutes before workout',benefit:'Buffers lactic acid — delays the burning sensation significantly. A proven performance booster for distance runners and cyclists.',cost:700,priority:'nice',tags:['Lactic Buffer','Endurance+'],goals:['endurance'],minBudget:1200,icon:'<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>'},
-  { id:'ironb12',priceRange:'₹200-500 /mo',name:'Iron + Vitamin B12',category:'Health',dose:'1 tablet daily',timing:'With breakfast',benefit:'Iron deficiency is very common in runners. Improves oxygen-carrying capacity — stamina increases naturally as a result.',cost:300,priority:'must',tags:['Oxygen Efficiency','Energy'],goals:['endurance','weight_loss','yoga'],minBudget:500,icon:'<circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>'},
-  { id:'magnesium',priceRange:'₹300-800 /mo',name:'Magnesium Glycinate',category:'Recovery',dose:'300-400mg',timing:'Before sleep at night',benefit:'Promotes muscle relaxation and deep sleep. Magnesium deficiency is extremely common in endurance athletes.',cost:400,priority:'nice',tags:['Sleep','Anti-Cramp'],goals:['endurance','muscle_building','weight_loss','yoga','zumba'],minBudget:800,icon:'<path d="M12 2L2 7l10 5 10-5-10-5z"/>'},
+  { id:'mass',brandRec:'Endura Mass / MuscleBlaze Super Mass',priceMin:1200,priceMax:2500,evidenceLevel:'moderate',priceRange:'₹800-1,800 /mo',name:'Mass Gainer',category:'Weight Gainer',dose:'75-100g (2 scoops)',timing:'Post-workout or with breakfast',benefit:'High-calorie formula that accelerates weight gain. 500-800 extra calories per serving — ideal for bulking phases.',cost:1400,priority:'must',tags:['Calorie Dense','Bulking'],goals:['weight_gain'],minBudget:500,icon:'<path d="M4 6h16M4 12h16M4 18h7"/>'},
+  { id:'whey',brandRec:'AS-IT-IS Atom / MuscleBlaze Whey',priceMin:900,priceMax:1800,evidenceLevel:'strong',priceRange:'₹900-2,200 /mo',name:'Whey Protein',category:'Protein',dose:'25-30g (1 scoop)',timing:'30 minutes after workout',benefit:'Fast-absorbing protein that repairs muscle. Maintains muscle quality during weight gain so you build lean mass — not just fat.',cost:1200,priority:'must',tags:['Fast Absorb','Muscle Repair'],goals:['weight_gain','muscle_building','weight_loss'],minBudget:500,icon:'<path d="M8 6h8l2 4H6L8 6z"/><path d="M6 10v8a2 2 0 002 2h8a2 2 0 002-2v-8"/>'},
+  { id:'creatine',brandRec:'AS-IT-IS Creatine Monohydrate',priceMin:300,priceMax:600,evidenceLevel:'strong',priceRange:'₹300-700 /mo',name:'Creatine Monohydrate',category:'Performance',dose:'5g daily',timing:'Any time daily — consistency is key',benefit:'Scientifically proven to increase strength and muscle volume. Enhances ATP production enabling heavier lifts and better performance.',cost:600,priority:'must',tags:['Science-Backed','Strength'],goals:['weight_gain','muscle_building'],minBudget:500,icon:'<path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/>'},
+  { id:'multivit',brandRec:'HealthKart HK Vitals / Wellman',priceMin:200,priceMax:500,evidenceLevel:'moderate',priceRange:'₹200-600 /mo',name:'Multivitamin',category:'Health',dose:'1 tablet daily',timing:'Take with breakfast',benefit:'Fills micronutrient gaps. Intense training demands extra vitamins — proper micronutrition dramatically improves recovery.',cost:400,priority:'must',tags:['Immunity','Recovery'],goals:['weight_gain','muscle_building','endurance','weight_loss','yoga','zumba'],minBudget:500,icon:'<circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>'},
+  { id:'omega3',brandRec:'AS-IT-IS Omega-3 / Fast&Up',priceMin:250,priceMax:500,evidenceLevel:'good',priceRange:'₹250-700 /mo',name:'Omega-3 Fish Oil',category:'Health',dose:'2-3g EPA+DHA',timing:'Take with meals',benefit:'Maintains joint health — reduces inflammation from heavy lifting. An important but often-ignored supplement for longevity.',cost:350,priority:'nice',tags:['Joint Health','Anti-Inflammatory'],goals:['weight_gain','muscle_building','endurance','weight_loss','yoga','zumba'],minBudget:500,icon:'<path d="M18 6c-2 0-3.5 1-5 2.5C11.5 7 10 6 8 6 5 6 3 8 3 10s2 4 5 4c2 0 3.5-1 4.5-2"/>'},
+  { id:'zma',brandRec:'MuscleBlaze ZMA / Nutricost ZMA',priceMin:350,priceMax:800,evidenceLevel:'limited',priceRange:'₹350-900 /mo',name:'ZMA (Zinc-Magnesium-B6)',category:'Recovery',dose:'3 capsules',timing:'30-60 minutes before sleep',benefit:'Improves deep sleep quality leading to improved recovery. Supports natural testosterone levels overnight.',cost:500,priority:'nice',tags:['Sleep Quality','Testosterone'],goals:['weight_gain','muscle_building','yoga'],minBudget:1200,icon:'<path d="M3 12h18M3 6l9 6 9-6M3 18l9-6 9 6"/>'},
+  { id:'isolate',brandRec:'AS-IT-IS Isolate / Nakpro Isolate',priceMin:1200,priceMax:2500,evidenceLevel:'strong',priceRange:'₹1,200-3,000 /mo',name:'Whey Isolate',category:'Protein',dose:'25g (1 scoop)',timing:'Immediately after workout',benefit:'Fastest absorbing protein — triggers maximum muscle protein synthesis in the critical 30-minute post-workout window.',cost:1800,priority:'must',tags:['Ultra-Pure','Fast Absorb'],goals:['muscle_building','weight_loss'],minBudget:1200,icon:'<path d="M8 6h8l2 4H6L8 6z"/><path d="M6 10v8a2 2 0 002 2h8a2 2 0 002-2v-8"/>'},
+  { id:'casein',brandRec:'MuscleBlaze Slow Protein',priceMin:900,priceMax:2000,evidenceLevel:'strong',priceRange:'₹1,000-2,500 /mo',name:'Casein Protein',category:'Protein',dose:'30g (1 scoop)',timing:'30 minutes before sleep',benefit:'Slow-release protein that supplies amino acids for 7-8 hours — prevents muscle breakdown completely overnight.',cost:1600,priority:'adv',tags:['Slow Release','Anti-Catabolic'],goals:['muscle_building','weight_gain'],minBudget:3000,icon:'<path d="M12 2c5.5 0 9 3 9 7s-3.5 7-9 7-9-3-9-7 3.5-7 9-7z"/>'},
+  { id:'bcaa',brandRec:'AS-IT-IS BCAA / MuscleBlaze BCAA',priceMin:400,priceMax:1000,evidenceLevel:'moderate',priceRange:'₹400-1,200 /mo',name:'BCAA 2:1:1',category:'Amino Acids',dose:'10g',timing:'During workout or fasted cardio',benefit:'Prevents muscle breakdown especially in fasted states. Leucine, Isoleucine, Valine ratio is optimized for muscle protein synthesis.',cost:800,priority:'nice',tags:['Anti-Catabolic','Intra-Workout'],goals:['muscle_building','endurance','zumba'],minBudget:1200,icon:'<path d="M12 2v20M2 12h20"/>'},
+  { id:'preworkout',brandRec:'MuscleBlaze PRE / Scitron Nitro',priceMin:500,priceMax:1200,evidenceLevel:'moderate',priceRange:'₹500-1,500 /mo',name:'Pre-Workout',category:'Performance',dose:'1 scoop',timing:'20-30 minutes before workout',benefit:'Energy, focus and pump notably improve. The Caffeine + Beta-Alanine + Citrulline combination doubles workout intensity.',cost:1200,priority:'nice',tags:['Energy','Focus','Pump'],goals:['muscle_building','endurance'],minBudget:2000,icon:'<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>'},
+  { id:'electro',brandRec:'Fast&Up Reload / MB Hydration',priceMin:250,priceMax:600,evidenceLevel:'good',priceRange:'₹300-700 /mo',name:'Electrolyte Mix',category:'Hydration',dose:'1 sachet in water',timing:'During and after workout',benefit:'Replaces Sodium, Potassium, and Magnesium lost through sweat. Eliminates cramps and keeps performance stable throughout training.',cost:450,priority:'must',tags:['Hydration','Anti-Cramp'],goals:['endurance','zumba','weight_loss'],minBudget:500,icon:'<path d="M12 2v10M12 22v-4"/>'},
+  { id:'beta_al',brandRec:'AS-IT-IS Beta-Alanine / Nutricost',priceMin:350,priceMax:800,evidenceLevel:'strong',priceRange:'₹400-900 /mo',name:'Beta-Alanine',category:'Performance',dose:'3.2-4.8g',timing:'30 minutes before workout',benefit:'Buffers lactic acid — delays the burning sensation significantly. A proven performance booster for distance runners and cyclists.',cost:700,priority:'nice',tags:['Lactic Buffer','Endurance+'],goals:['endurance'],minBudget:1200,icon:'<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>'},
+  { id:'ironb12',brandRec:'Carbamide Forte Iron+B12',priceMin:200,priceMax:450,evidenceLevel:'good',priceRange:'₹200-500 /mo',name:'Iron + Vitamin B12',category:'Health',dose:'1 tablet daily',timing:'With breakfast',benefit:'Iron deficiency is very common in runners. Improves oxygen-carrying capacity — stamina increases naturally as a result.',cost:300,priority:'must',tags:['Oxygen Efficiency','Energy'],goals:['endurance','weight_loss','yoga'],minBudget:500,icon:'<circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>'},
+  { id:'magnesium',brandRec:'Himalayan Organics Magnesium',priceMin:280,priceMax:650,evidenceLevel:'moderate',priceRange:'₹300-800 /mo',name:'Magnesium Glycinate',category:'Recovery',dose:'300-400mg',timing:'Before sleep at night',benefit:'Promotes muscle relaxation and deep sleep. Magnesium deficiency is extremely common in endurance athletes.',cost:400,priority:'nice',tags:['Sleep','Anti-Cramp'],goals:['endurance','muscle_building','weight_loss','yoga','zumba'],minBudget:800,icon:'<path d="M12 2L2 7l10 5 10-5-10-5z"/>'},
 ];
 
 // WORKOUT PLANS
@@ -4843,10 +4926,15 @@ const FAQS = [
 // TESTIMONIALS
 // ════════════════════════════════════════════════
 var TSTS = [
-  {q:'Finally a tool that recommends affordable supplements, not just the most expensive ones. Got a 3-product stack for &#8377;1,800 that actually changed my body in 3 months.',a:'RAHUL SHARMA',r:'Muscle Building \u2014 6 months'},
-  {q:'The BMI calculator with macro breakdown changed how I approach food. I hit my protein target every day now and the recovery difference is night and day.',a:'PRIYA NAIR',r:'Weight Loss \u2014 4 months'},
-  {q:'Best free fitness resource I have found. The workout plan plus supplement stack combination was exactly what I needed for marathon prep.',a:'DAVID OKONKWO',r:'Endurance \u2014 8 months'}
+  {q:'Finally a supplement tool that fits Indian budgets. Selected creatine and whey within &#8377;1,500 — exactly what I needed.',a:'Arjun Mehta',r:'Mumbai &mdash; Muscle Building'},
+  {q:'The BMI calculator with macro breakdown is genuinely useful. First time I understood how much protein I need daily.',a:'Sneha Iyer',r:'Bangalore &mdash; Fat Loss'},
+  {q:'Recommends supplements based on goal and budget — not just the most expensive ones. Refreshingly honest.',a:'Rohit Sharma',r:'Delhi &mdash; Weight Training'},
+  {q:'Used the workout plan and diet guide together. Makes more sense than random YouTube advice. Solid free resource.',a:'Karan Patel',r:'Ahmedabad &mdash; General Fitness'},
+  {q:'The brand checker helped me verify my supplement before buying. Did not know AS-IT-IS was this well rated.',a:'Ananya Singh',r:'Hyderabad &mdash; Yoga &amp; Wellness'},
+  {q:'Tried many supplement sites but this is the only one that takes your budget seriously. Generated a solid stack under &#8377;2,000.',a:'Vikram Nair',r:'Chennai &mdash; Endurance Training'}
 ];
+var tstIdx = 0;
+
 var tstIdx = 0;
 
 function showTst(i) {
@@ -4855,6 +4943,20 @@ function showTst(i) {
   var qEl = document.getElementById('testimonialQuote');
   var aEl = document.getElementById('testimonialAuthor');
   var rEl = document.getElementById('testimonialRole');
+  // Build dots if not yet built
+  var dotsWrap = document.getElementById('tstDots');
+  if(dotsWrap && dotsWrap.children.length === 0) {
+    TSTS.forEach(function(_,idx){
+      var d=document.createElement('div');
+      d.style.cssText='width:7px;height:7px;border-radius:50%;background:rgba(201,168,76,'+(idx===i?'.9':'.2')+');cursor:pointer;transition:background .3s';
+      d.onclick=function(){showTst(idx);};
+      dotsWrap.appendChild(d);
+    });
+  }
+  // Update dots
+  if(dotsWrap) Array.from(dotsWrap.children).forEach(function(d,idx){
+    d.style.background='rgba(201,168,76,'+(idx===i?'.9':'.2')+')';
+  });
   var dots = document.querySelectorAll('.tdot');
   if (qEl) {
     qEl.style.opacity = '0'; qEl.style.transform = 'translateY(10px)';
@@ -4954,7 +5056,8 @@ function doGenerate(goal, budget) {
   rd.style.display = 'block';
   ct.style.minHeight = '200px';
 
-  var supps = (typeof selectStack==='function') ? selectStack(goal, budget)||[] : [];
+  var _profile = typeof sfGetProfile==='function' ? sfGetProfile() : null;
+  var supps = (typeof sfSmartSelectStack==='function') ? sfSmartSelectStack(goal, budget, _profile)||[] : (typeof selectStack==='function' ? selectStack(goal, budget)||[] : []);
 
   if(!supps.length) {
     ct.innerHTML = '<div style="padding:3rem;text-align:center;font-family:DM Mono,monospace;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">No supplements found. Try higher budget.</div>';
@@ -4977,21 +5080,22 @@ function doGenerate(goal, budget) {
     : '<span style="color:#c47f6a">Rs.' + Math.abs(diff).toLocaleString('en-IN') + ' over budget</span>';
 
   var cards = supps.map(function(s) {
-    var badge = s.priority==='must'?'Must-Have':s.priority==='nice'?'Nice-to-Have':'Advanced';
+    var badge = s.evidenceLevel==='strong'?'Strong Evidence':s.evidenceLevel==='good'?'Good Evidence':s.evidenceLevel==='moderate'?'Moderate Evidence':'Limited Evidence';
     return [
       '<div class="sc vis" data-id="'+s.id+'">',
       '<div class="sc-top">',
       '<div class="sc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5">'+s.icon+'</svg></div>',
-      '<div class="sc-badge '+s.priority+'">'+badge+'</div>',
+      '<div class="sc-badge sc-evidence-'+s.evidenceLevel+'">'+badge+'</div>',
       '</div>',
       '<div class="sc-name">'+s.name+'</div>',
       '<div class="sc-cat">'+s.category+'</div>',
       '<div class="sc-dose"><div class="sc-dose-l">Dose &middot; Timing</div><div class="sc-dose-v">'+s.dose+' &mdash; '+s.timing+'</div></div>',
       '<div class="sc-bene">'+s.benefit+'</div>',
       '<div class="sc-footer">',
-      '<div><div class="sc-cost">&#8377;'+s.cost.toLocaleString("en-IN")+'</div><div class="sc-costl">/ month</div></div>',
       '<div class="sc-tags">'+s.tags.map(function(t){return '<span class="sc-tag">'+t+'</span>';}).join('')+'</div>',
       '</div>',
+      (s.brandRec?'<div class="sc-brand-rec">&#128204; '+s.brandRec+'</div>':''),
+      (s.priceMin?'<div class="sc-price-range">~&#8377;'+s.priceMin.toLocaleString("en-IN")+' &ndash; &#8377;'+s.priceMax.toLocaleString("en-IN")+' /mo <span class="sc-price-note">May 2025</span></div>':''),
       (AFFILIATE_URLS&&AFFILIATE_URLS[s.id]?'<a href="'+AFFILIATE_URLS[s.id]+'" target="_blank" rel="noopener" class="sc-buy-btn">&#128722; Check Current Price &#8594;</a>':''),
       '</div>'
     ].join('');
@@ -5004,9 +5108,13 @@ function doGenerate(goal, budget) {
     '<div class="ssg">',
     cards,
     '</div>',
-    '<div class="stack-banner">',
-    '<div><div style="font-family:DM Mono,monospace;font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Monthly cost</div><div style="margin-top:.2rem">'+budgLine+'</div></div>',
-    '<div style="font-family:Cormorant Garamond,serif;font-size:1.8rem;font-weight:300;color:var(--gold)">&#8377;'+total.toLocaleString('en-IN')+'</div>',
+    '<div class="budget-tracker-box">',
+    '<div class="btb-header">',
+    '<div><div class="btb-label">Your Budget</div><div class="btb-budget">&#8377;'+budget.toLocaleString("en-IN")+'</div></div>',
+    '<div style="text-align:right"><div class="btb-label">Est. Monthly Spend</div><div class="btb-spend" id="btbSpend" style="font-family:Cormorant Garamond,serif;font-size:1.3rem;font-weight:300;color:var(--gold)">Calculating...</div></div>',
+    '</div>',
+    '<div class="btb-bar-wrap"><div class="btb-bar" id="btbBar" style="height:100%;width:0%;background:var(--gold);transition:width .8s cubic-bezier(.23,1,.32,1)"></div></div>',
+    '<div class="btb-footer" id="btbFooter" style="font-family:DM Mono,monospace;font-size:.58rem;letter-spacing:.06em;color:var(--muted);line-height:1.6;margin-top:.4rem"></div>',
     '</div>',
     tipHtml,
     '<div style="display:flex;gap:.5rem;margin-top:.8rem;flex-wrap:wrap">',
@@ -5040,6 +5148,30 @@ function doGenerate(goal, budget) {
   if(typeof addAffiliateBtns==='function') setTimeout(addAffiliateBtns,300);
   rd.scrollIntoView({behavior:'smooth',block:'nearest'});
   if(typeof addAffiliateBtns==='function') setTimeout(addAffiliateBtns,300);
+  // Budget bar animation
+  setTimeout(function(){
+    var totalMin=supps.reduce(function(a,s){return a+(s.priceMin||s.cost);},0);
+    var totalMax=supps.reduce(function(a,s){return a+(s.priceMax||s.cost);},0);
+    var pct=Math.min(100,Math.round((totalMin/budget)*100));
+    var spendEl=document.getElementById('btbSpend');
+    var barEl=document.getElementById('btbBar');
+    var footEl=document.getElementById('btbFooter');
+    if(spendEl){spendEl.innerHTML='&#8377;'+totalMin.toLocaleString('en-IN')+' &ndash; &#8377;'+totalMax.toLocaleString('en-IN');spendEl.style.color=pct<=100?'var(--gold)':'var(--rose)';}
+    if(barEl){barEl.style.width=pct+'%';barEl.style.background=pct<=80?'#34d399':pct<=100?'var(--gold)':'var(--rose)';}
+    if(footEl){
+      var rem=budget-totalMin;
+      // Protein gap analysis
+      var pProfile=typeof sfGetProfile==='function'?sfGetProfile():null;
+      if(pProfile&&pProfile.proteinTarget){
+        var stackProtein=supps.filter(function(s){return s.id==='whey'||s.id==='isolate'||s.id==='casein'||s.id==='mass';}).reduce(function(a,s){return a+24;},0);
+        var gapMsg=pProfile.proteinTarget>stackProtein?'Your daily protein target is '+pProfile.proteinTarget+'g. This stack adds ~'+stackProtein+'g from supplements.':'';
+        if(gapMsg&&footEl) footEl.innerHTML+=' <span style="color:var(--gold2);font-size:.5rem;display:block;margin-top:.3rem">'+gapMsg+'</span>';
+      }
+      footEl.innerHTML=rem>300?'&#10024; &#8377;'+rem.toLocaleString('en-IN')+' remaining — consider adding more supplements':
+        rem>=0?'&#10003; Stack fits comfortably within your budget!':
+        '&#9888; Est. spend slightly over budget — click Check Price for live Amazon price.';
+    }
+  },300);
 }
 
 
@@ -5468,7 +5600,7 @@ function googleTranslateElementInit(){new google.translate.TranslateElement({pag
   </div>
 
   <!-- No key notice -->
-  <div id="aiNoKey" class="ai-no-key" style="display:none">
+  <div id="aiNoKey2" class="ai-no-key" style="display:none">
     <p><strong style="color:var(--gold)">Get FREE API key:</strong><br>1. Go to <a href="https://console.groq.com/keys" target="_blank" rel="noopener">console.groq.com/keys</a><br>2. Sign up free &rarr; Create API Key<br>3. Paste above &rarr; Done! &#10003;</p>
   </div>
 
@@ -7858,6 +7990,7 @@ document.addEventListener('DOMContentLoaded', function() {
   initReveal();
   initScroll();
   showTst(0);
+  if(typeof sfInitOnboarding==='function') sfInitOnboarding();
   animateCounters();
   initStickyBar();
   initRipples();
@@ -8550,7 +8683,7 @@ function sfPageMythsLearn(el){
     <div class="myth-card reveal reveal-d1"><div class="myth-top"><span class="myth-badge myth">Myth</span><div class="myth-claim">Fat burners burn fat while you rest</div></div><div class="myth-verdict busted"><span class="myth-verdict-dot"></span>Busted &mdash; Only Modest Effect</div><div class="myth-fact">Fat burners boost metabolism by <strong>4&ndash;8% at best</strong>. Without a calorie deficit, they are ineffective. A 30-minute walk burns more fat than any fat burner pill on the market.</div><div class="myth-source">Acheson et al. 2004 &bull; American Journal of Clinical Nutrition</div></div>
     <div class="myth-card reveal"><div class="myth-top"><span class="myth-badge myth">Myth</span><div class="myth-claim">Women who lift weights get bulky</div></div><div class="myth-verdict busted"><span class="myth-verdict-dot"></span>Busted &mdash; Biology Does Not Work That Way</div><div class="myth-fact">Women have <strong>10&ndash;30x less testosterone</strong> than men. Significant muscle bulk requires years of dedicated training and a large calorie surplus. Lifting makes women lean and strong, not bulky.</div><div class="myth-source">Staron et al. 2000 &bull; Journal of Applied Physiology</div></div>
     <div class="myth-card reveal reveal-d1"><div class="myth-top"><span class="myth-badge myth">Myth</span><div class="myth-claim">Expensive supplements are always better quality</div></div><div class="myth-verdict busted"><span class="myth-verdict-dot"></span>Busted &mdash; Price Reflects Marketing</div><div class="myth-fact"><strong>Creatine monohydrate is creatine monohydrate</strong> regardless of brand. Third-party tested budget brands like AS-IT-IS are often identical in purity to premium imports at 3x the price.</div><div class="myth-source">Labdoor supplement testing 2022 &bull; ConsumerLab reports</div></div>
-    <div class="myth-card reveal"><div class="myth-top"><span class="myth-badge fact">Fact</span><div class="myth-claim">Creatine is the most researched supplement in history</div></div><div class="myth-verdict confirmed"><span class="myth-verdict-dot"></span>Confirmed &mdash; Strongest Evidence Base</div><div class="myth-fact"><strong>Over 700 peer-reviewed studies</strong> confirm creatine monohydrate increases strength, power output and lean muscle. It is the most evidence-backed performance supplement ever studied.</div><div class="myth-source">ISSN Position Stand 2021 &bull; 700+ peer-reviewed studies</div></div>
+    <div class="myth-card reveal"><div class="myth-top"><span class="myth-badge fact">Fact</span><div class="myth-claim">Creatine is the most researched supplement in history</div></div><div class="myth-verdict confirmed"><span class="myth-verdict-dot"></span>Confirmed &mdash; Strongest Evidence Base</div><div class="myth-fact"><strong>Over 700 peer-reviewed studies</strong> confirm creatine monohydrate increases strength, power output and lean muscle. It is the most evidence-backed performance supplement ever studied.</div><div class="myth-source">ISSN Position Stand 2021 &bull; ISSN position stands and published research</div></div>
     <div class="myth-card reveal reveal-d1"><div class="myth-top"><span class="myth-badge fact">Fact</span><div class="myth-claim">80% of Indians are Vitamin D deficient</div></div><div class="myth-verdict confirmed"><span class="myth-verdict-dot"></span>Confirmed &mdash; Public Health Crisis</div><div class="myth-fact">Despite abundant sunlight, <strong>70&ndash;90% of Indians</strong> have insufficient Vitamin D due to indoor lifestyles, air pollution and darker skin. Deficiency reduces testosterone, muscle function and immunity.</div><div class="myth-source">JAPI 2018 &bull; Indian Journal of Endocrinology and Metabolism</div></div>
   </div>`);
 }
@@ -9243,5 +9376,372 @@ window._sfShowPriceDisc = function(ct){
 };
 
 </script>
+<script>
+// ════════════════════════════════════════════════════════════════
+// STACKFORGE — SMART ONBOARDING + BMI-AWARE STACK LOGIC
+// ════════════════════════════════════════════════════════════════
+
+// ── User Profile Storage ─────────────────────────────────────
+var SF_PROFILE_KEY = 'sf_user_profile_v2';
+
+function sfGetProfile() {
+  try { return JSON.parse(localStorage.getItem(SF_PROFILE_KEY)||'null'); }
+  catch(e) { return null; }
+}
+
+function sfSaveProfile(data) {
+  try { localStorage.setItem(SF_PROFILE_KEY, JSON.stringify(data)); }
+  catch(e) {}
+}
+
+// ── BMI + Health Calculations ─────────────────────────────────
+function sfCalcStats(weight, height, age, gender, activity) {
+  var h = height / 100;
+  var bmi = Math.round((weight / (h * h)) * 10) / 10;
+  var bmiCat = bmi < 18.5 ? 'underweight' : bmi < 25 ? 'normal' : bmi < 30 ? 'overweight' : 'obese';
+
+  // Mifflin-St Jeor BMR
+  var bmr = gender === 'female'
+    ? (10 * weight) + (6.25 * height) - (5 * age) - 161
+    : (10 * weight) + (6.25 * height) - (5 * age) + 5;
+  var tdee = Math.round(bmr * activity);
+
+  // Protein target based on goal + BMI
+  var proteinMult = bmiCat === 'obese' ? 2.0 : bmiCat === 'overweight' ? 1.8 : 2.2;
+  var proteinTarget = Math.round(weight * proteinMult);
+
+  return { bmi: bmi, bmiCat: bmiCat, bmr: Math.round(bmr), tdee: tdee, proteinTarget: proteinTarget };
+}
+
+// ── BMI-Aware selectStack ─────────────────────────────────────
+function sfSmartSelectStack(goal, budget, profile) {
+  if (!profile) return selectStack(goal, budget);
+
+  var bmiCat  = profile.bmiCat || 'normal';
+  var bmi     = profile.bmi    || 22;
+
+  // Clone supplements — modify priority based on profile
+  var adjusted = SUPPLEMENTS.map(function(s) {
+    var clone = {};
+    for (var k in s) clone[k] = s[k];
+
+    // Underweight + weight gain → push mass gainer harder
+    if (bmiCat === 'underweight' && goal === 'weight_gain' && s.id === 'mass') {
+      clone.minBudget = 0;
+    }
+
+    // Overweight/Obese → no mass gainer regardless of goal
+    if ((bmiCat === 'overweight' || bmiCat === 'obese') && s.id === 'mass') {
+      clone.goals = clone.goals.filter(function(g) { return g !== goal; });
+    }
+
+    // Overweight + muscle_building → prefer isolate over regular whey
+    if ((bmiCat === 'overweight' || bmiCat === 'obese') && goal === 'muscle_building') {
+      if (s.id === 'whey')    { clone.priority = 'nice'; }
+      if (s.id === 'isolate') { clone.priority = 'must'; clone.minBudget = 0; clone.goals = clone.goals.concat([goal]); }
+    }
+
+    // Obese + weight_loss → iron+b12 and electrolytes become must
+    if (bmiCat === 'obese' && goal === 'weight_loss') {
+      if (s.id === 'electro') { clone.priority = 'must'; }
+      if (s.id === 'ironb12') { clone.priority = 'must'; }
+    }
+
+    return clone;
+  });
+
+  // Run budget filter on adjusted supplements
+  if (!budget || budget < 0) budget = 0;
+  var gs    = adjusted.filter(function(s) { return s.goals.indexOf(goal) !== -1 && s.minBudget <= budget; });
+  var must  = gs.filter(function(s) { return s.priority === 'must'; });
+  var nice  = gs.filter(function(s) { return s.priority === 'nice'; });
+  var adv   = gs.filter(function(s) { return s.priority === 'adv'; });
+
+  var stack = must.slice();
+  var spent = stack.reduce(function(a, s) { return a + s.cost; }, 0);
+  nice.forEach(function(s) { if (spent + s.cost <= budget * 1.08) { stack.push(s); spent += s.cost; } });
+  adv.forEach(function(s)  { if (spent + s.cost <= budget * 1.08) { stack.push(s); spent += s.cost; } });
+
+  return stack;
+}
+
+// ── 3-Step Onboarding Modal ───────────────────────────────────
+function sfInitOnboarding() {
+  var profile = sfGetProfile();
+
+  // Returning user — personalize hero
+  if (profile && profile.name) {
+    sfPersonalizeHero(profile);
+    return;
+  }
+
+  // First visit — show onboarding after 1.5s
+  setTimeout(sfShowOnboarding, 1500);
+}
+
+function sfPersonalizeHero(profile) {
+  var greet = document.getElementById('heroGreeting');
+  if (greet) {
+    var hour = new Date().getHours();
+    var time = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+    greet.textContent = time + ', ' + profile.name + '!';
+    greet.style.display = 'block';
+  }
+  // Pre-fill creator if they have a goal
+  if (profile.goal) {
+    setTimeout(function() {
+      var card = document.querySelector('.gc[data-goal="' + profile.goal + '"]');
+      if (card) card.click();
+      if (profile.budget && typeof applyBudget === 'function') applyBudget(profile.budget);
+      else if (profile.budget) {
+        selBudget = profile.budget;
+        var disp = document.getElementById('budgetDisplay');
+        if (disp) disp.innerHTML = '&#8377;' + profile.budget.toLocaleString('en-IN') + ' <small>/ month</small>';
+        var slider = document.getElementById('budgetSlider');
+        if (slider) slider.value = profile.budget;
+      }
+    }, 500);
+  }
+}
+
+function sfShowOnboarding() {
+  var modal = document.getElementById('sfOnboardModal');
+  if (!modal) return;
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+  sfOnboardStep(1);
+}
+
+function sfCloseOnboarding() {
+  var modal = document.getElementById('sfOnboardModal');
+  if (modal) modal.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+var _sfOBData = {};
+
+function sfOnboardStep(step) {
+  var content = document.getElementById('sfOBContent');
+  var progress = document.getElementById('sfOBProgress');
+  var steps = document.querySelectorAll('.sfob-step-dot');
+  if (!content) return;
+
+  // Update progress dots
+  steps.forEach(function(d, i) {
+    d.classList.toggle('active', i < step);
+  });
+  if (progress) progress.style.width = ((step - 1) / 2 * 100) + '%';
+
+  if (step === 1) {
+    content.innerHTML = [
+      '<div class="sfob-step">',
+      '<div class="sfob-step-label">Step 1 of 3</div>',
+      '<h2 class="sfob-title">What\'s your <em>fitness goal?</em></h2>',
+      '<p class="sfob-sub">We\'ll build your personalized supplement stack around this.</p>',
+      '<div style="margin:.8rem 0"><input id="sfobName" class="cm-input" placeholder="Your first name (optional)" style="margin-bottom:.8rem"></div>',
+      '<div class="sfob-goals">',
+      ['weight_gain','muscle_building','weight_loss','endurance','yoga','zumba'].map(function(g) {
+        var labels = {weight_gain:'Weight Gain', muscle_building:'Muscle Building', weight_loss:'Weight Loss', endurance:'Endurance', yoga:'Yoga', zumba:'Zumba'};
+        var icons  = {weight_gain:'&#128170;', muscle_building:'&#127947;', weight_loss:'&#128293;', endurance:'&#127939;', yoga:'&#129340;', zumba:'&#127926;'};
+        return '<div class="sfob-goal-card" data-goal="'+g+'" onclick="sfOBSelectGoal(this)">'
+          +'<span class="sfob-goal-icon">'+icons[g]+'</span>'
+          +'<span class="sfob-goal-label">'+labels[g]+'</span>'
+          +'</div>';
+      }).join(''),
+      '</div>',
+      '<button class="btn-primary sfob-next" onclick="sfOBNext1()" style="width:100%;margin-top:1.5rem" disabled id="sfobNext1">Continue &#8594;</button>',
+      '</div>'
+    ].join('');
+
+  } else if (step === 2) {
+    content.innerHTML = [
+      '<div class="sfob-step">',
+      '<div class="sfob-step-label">Step 2 of 3</div>',
+      '<h2 class="sfob-title">Tell us about <em>yourself</em></h2>',
+      '<p class="sfob-sub">We\'ll calculate your BMI, daily calories and protein target.</p>',
+      '<div class="sfob-form-grid">',
+      '<div class="fg"><label class="flbl">Age</label><input id="sfobAge" type="number" class="cm-input" placeholder="e.g. 24" min="13" max="80"></div>',
+      '<div class="fg"><label class="flbl">Weight (kg)</label><input id="sfobWeight" type="number" class="cm-input" placeholder="e.g. 70" min="30" max="200"></div>',
+      '<div class="fg"><label class="flbl">Height (cm)</label><input id="sfobHeight" type="number" class="cm-input" placeholder="e.g. 175" min="100" max="250"></div>',
+      '<div class="fg"><label class="flbl">Gender</label>',
+      '<select id="sfobGender" class="cm-input"><option value="male">Male</option><option value="female">Female</option></select></div>',
+      '</div>',
+      '<div class="fg" style="margin-top:.8rem"><label class="flbl">Activity Level</label>',
+      '<select id="sfobActivity" class="cm-input">',
+      '<option value="1.2">Sedentary (office job, no exercise)</option>',
+      '<option value="1.375">Light (1-3 days/week gym)</option>',
+      '<option value="1.55" selected>Moderate (3-5 days/week gym)</option>',
+      '<option value="1.725">Active (6-7 days/week gym)</option>',
+      '<option value="1.9">Very Active (athlete / physical job)</option>',
+      '</select></div>',
+      '<div style="display:flex;gap:.6rem;margin-top:1.5rem">',
+      '<button class="abtn" onclick="sfOnboardStep(1)" style="flex:1">&#8592; Back</button>',
+      '<button class="btn-primary" onclick="sfOBNext2()" style="flex:2">Continue &#8594;</button>',
+      '</div></div>'
+    ].join('');
+
+  } else if (step === 3) {
+    // Show calculated stats if we have them
+    var statsHtml = '';
+    if (_sfOBData.weight && _sfOBData.height) {
+      var stats = sfCalcStats(_sfOBData.weight, _sfOBData.height, _sfOBData.age||25, _sfOBData.gender||'male', _sfOBData.activity||1.55);
+      _sfOBData.bmi = stats.bmi; _sfOBData.bmiCat = stats.bmiCat;
+      _sfOBData.bmr = stats.bmr; _sfOBData.tdee = stats.tdee;
+      _sfOBData.proteinTarget = stats.proteinTarget;
+      var bmiColor = stats.bmiCat==='normal'?'#34d399':stats.bmiCat==='underweight'?'var(--gold)':'var(--rose)';
+      statsHtml = '<div class="sfob-stats-row">'
+        +'<div class="sfob-stat"><div class="sfob-stat-n" style="color:'+bmiColor+'">'+stats.bmi+'</div><div class="sfob-stat-l">BMI</div></div>'
+        +'<div class="sfob-stat"><div class="sfob-stat-n">'+stats.tdee.toLocaleString('en-IN')+'</div><div class="sfob-stat-l">Daily Calories</div></div>'
+        +'<div class="sfob-stat"><div class="sfob-stat-n" style="color:var(--gold)">'+stats.proteinTarget+'g</div><div class="sfob-stat-l">Protein Target</div></div>'
+        +'</div>';
+    }
+    content.innerHTML = [
+      '<div class="sfob-step">',
+      '<div class="sfob-step-label">Step 3 of 3</div>',
+      '<h2 class="sfob-title">Set your <em>budget</em></h2>',
+      statsHtml,
+      '<p class="sfob-sub" style="margin-top:.8rem">Monthly supplement budget — we\'ll find the best stack within this.</p>',
+      '<div class="budget-display-box" style="margin:.8rem 0"><div id="sfobBudgetDisplay" style="font-family:Cormorant Garamond,serif;font-size:2.5rem;font-weight:300;color:var(--gold)">&#8377;2,000</div><div style="font-family:DM Mono,monospace;font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">/ month</div></div>',
+      '<input id="sfobBudgetSlider" type="range" min="500" max="10000" step="100" value="2000" oninput="document.getElementById(\'sfobBudgetDisplay\').innerHTML=\'&#8377;\'+parseInt(this.value).toLocaleString(\'en-IN\')" style="width:100%;margin:.6rem 0">',
+      '<div class="tierrow">',
+      [['500','5K'],['1000','10K'],['2000','20K'],['5000','50K']].map(function(t){
+        return '<button class="tb" onclick="document.getElementById(\'sfobBudgetSlider\').value='+t[0]+';document.getElementById(\'sfobBudgetDisplay\').innerHTML=\'&#8377;\'+parseInt('+t[0]+').toLocaleString(\'en-IN\')">Under &#8377;'+t[1]+'</button>';
+      }).join(''),
+      '</div>',
+      '<div style="display:flex;gap:.6rem;margin-top:1.5rem">',
+      '<button class="abtn" onclick="sfOnboardStep(2)" style="flex:1">&#8592; Back</button>',
+      '<button class="btn-primary" onclick="sfOBFinish()" style="flex:2;background:var(--gold)">Build My Stack &#8594;</button>',
+      '</div></div>'
+    ].join('');
+  }
+}
+
+window.sfOBSelectGoal = function(el) {
+  document.querySelectorAll('.sfob-goal-card').forEach(function(c){ c.classList.remove('active'); });
+  el.classList.add('active');
+  _sfOBData.goal = el.dataset.goal;
+  var btn = document.getElementById('sfobNext1');
+  if (btn) btn.disabled = false;
+};
+
+window.sfOBNext1 = function() {
+  var name = document.getElementById('sfobName');
+  if (name && name.value.trim()) _sfOBData.name = name.value.trim();
+  if (!_sfOBData.goal) { if(typeof showToast!=='undefined') showToast('Please select a goal first','error',2000); return; }
+  sfOnboardStep(2);
+};
+
+window.sfOBNext2 = function() {
+  var age    = parseInt(document.getElementById('sfobAge').value)    || 0;
+  var weight = parseFloat(document.getElementById('sfobWeight').value) || 0;
+  var height = parseFloat(document.getElementById('sfobHeight').value) || 0;
+  var gender = document.getElementById('sfobGender').value;
+  var activity = parseFloat(document.getElementById('sfobActivity').value);
+
+  if (!weight || !height) {
+    if(typeof showToast!=='undefined') showToast('Please enter weight and height','error',2000);
+    return;
+  }
+  if (height < 100 || height > 250) {
+    if(typeof showToast!=='undefined') showToast('Please enter height in cm (e.g. 175)','error',2000);
+    return;
+  }
+  if (weight < 30 || weight > 200) {
+    if(typeof showToast!=='undefined') showToast('Please enter a valid weight in kg','error',2000);
+    return;
+  }
+
+  _sfOBData.age      = age || 25;
+  _sfOBData.weight   = weight;
+  _sfOBData.height   = height;
+  _sfOBData.gender   = gender;
+  _sfOBData.activity = activity;
+  sfOnboardStep(3);
+};
+
+window.sfOBFinish = function() {
+  var slider = document.getElementById('sfobBudgetSlider');
+  _sfOBData.budget = parseInt(slider ? slider.value : 2000) || 2000;
+  _sfOBData.timestamp = Date.now();
+
+  // Save profile
+  sfSaveProfile(_sfOBData);
+
+  // Close modal
+  sfCloseOnboarding();
+
+  // Personalize hero
+  sfPersonalizeHero(_sfOBData);
+
+  // Scroll to creator and auto-generate
+  var creator = document.getElementById('creator');
+  if (creator) creator.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  setTimeout(function() {
+    // Select their goal card
+    var card = document.querySelector('.gc[data-goal="' + _sfOBData.goal + '"]');
+    if (card) card.click();
+
+    // Set budget
+    if (_sfOBData.budget) {
+      selBudget = _sfOBData.budget;
+      var disp = document.getElementById('budgetDisplay');
+      if (disp) disp.innerHTML = '&#8377;' + _sfOBData.budget.toLocaleString('en-IN') + ' <small>/ month</small>';
+      var slider2 = document.getElementById('budgetSlider');
+      if (slider2) slider2.value = _sfOBData.budget;
+      var custom = document.getElementById('budgetCustom');
+      if (custom) custom.value = _sfOBData.budget;
+    }
+
+    // Show personalized welcome message
+    var profile = sfGetProfile();
+    var stats = profile.bmi ? profile : sfCalcStats(profile.weight||70, profile.height||175, profile.age||25, profile.gender||'male', profile.activity||1.55);
+    var bmiLabel = stats.bmiCat === 'underweight' ? 'Underweight' : stats.bmiCat === 'normal' ? 'Healthy Weight' : stats.bmiCat === 'overweight' ? 'Overweight' : 'Obese';
+    if(typeof showToast !== 'undefined') {
+      var msg = (profile.name ? 'Welcome ' + profile.name + '! ' : 'Welcome! ');
+      msg += 'BMI: ' + stats.bmi + ' (' + bmiLabel + ') · Protein: ' + stats.proteinTarget + 'g/day';
+      showToast(msg, 'success', 5000);
+    }
+
+    // Auto-generate stack after 800ms
+    setTimeout(function() {
+      var genBtn = document.getElementById('generateBtn');
+      if (genBtn && !genBtn.disabled && selGoal) {
+        genBtn.click();
+      }
+    }, 800);
+  }, 600);
+};
+
+// Call initOnboarding on DOM load (added to DCL block)
+
+</script>
+<!-- Onboarding Modal -->
+<div id="sfOnboardModal" style="position:fixed;inset:0;z-index:9000;display:flex;align-items:center;justify-content:center;background:rgba(4,6,15,.92);backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity .35s">
+  <div style="background:var(--bg2);border:1px solid rgba(201,168,76,.2);width:100%;max-width:520px;margin:1rem;position:relative;max-height:90vh;overflow-y:auto">
+
+    <!-- Close -->
+    <button onclick="sfCloseOnboarding()" style="position:absolute;top:.8rem;right:.8rem;background:transparent;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;line-height:1;z-index:1">&#10005;</button>
+
+    <!-- Header -->
+    <div style="padding:1.8rem 2rem 1rem;border-bottom:1px solid rgba(201,168,76,.08)">
+      <div style="font-family:'DM Mono',monospace;font-size:.55rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:.4rem">StackForge</div>
+      <!-- Progress bar -->
+      <div style="height:2px;background:rgba(201,168,76,.1);margin:.8rem 0;position:relative">
+        <div id="sfOBProgress" style="height:100%;background:var(--gold);transition:width .4s ease;width:0%"></div>
+      </div>
+      <!-- Step dots -->
+      <div style="display:flex;gap:.4rem;justify-content:center">
+        <div class="sfob-step-dot active"></div>
+        <div class="sfob-step-dot"></div>
+        <div class="sfob-step-dot"></div>
+      </div>
+    </div>
+
+    <!-- Content area -->
+    <div id="sfOBContent" style="padding:1.5rem 2rem 2rem"></div>
+  </div>
+</div>
+
 </body>
 </html>
