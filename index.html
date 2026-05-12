@@ -10062,10 +10062,10 @@ function sfBuildDashboard() {
     '<div class="dash-supp-grid">' + stackHtml + '</div>',
     '</div>',
 
-    // Workout
+    // Workout — interactive picker
     '<div class="dash-col">',
-    '<div class="dash-col-head"><div class="dash-col-title">🏋️ Weekly Workout</div><div class="dash-col-sub">5-day plan for ' + (goalLabels[goal] || goal) + '</div></div>',
-    '<div class="dash-workout-list">' + workoutHtml + '</div>',
+    '<div class="dash-col-head"><div class="dash-col-title">🏋️ Build Your Workout</div><div class="dash-col-sub">Pick exercises you can do · saves automatically</div></div>',
+    '<div id="dashWorkoutPicker"></div>',
     '</div>',
 
     // Diet
@@ -10077,11 +10077,33 @@ function sfBuildDashboard() {
     '</div>',
     '</div>', // dash-grid
 
+    // Saved workout summary (shown if user has saved a plan)
+    (typeof sfGetSavedWorkout==='function' && sfGetSavedWorkout() && sfGetSavedWorkout().savedPlan ?
+      '<div id="dashSavedPlan" style="margin-top:1.2rem;border:1px solid rgba(201,168,76,.15);background:rgba(201,168,76,.04)">'
+      +'<div style="padding:.7rem 1rem;border-bottom:1px solid rgba(201,168,76,.08)">'
+      +'<div style="font-family:DM Mono,monospace;font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)">✓ Your Saved Workout Plan</div></div>'
+      +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0">'
+      +(sfGetSavedWorkout().savedPlan||[]).map(function(s){
+        return '<div style="padding:.6rem 1rem;border-right:1px solid rgba(201,168,76,.06)">'
+        +'<div style="font-family:DM Mono,monospace;font-size:.46rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem">'+s.slot+'</div>'
+        +s.exercises.map(function(e){return '<div style="font-size:.76rem;color:var(--muted);padding:.1rem 0">· '+e+'</div>';}).join('')
+        +'</div>';
+      }).join('')
+      +'</div></div>'
+    : ''),
+
+
     // Protein gap
     '<div class="dash-protein-gap" id="dashProteinGap"></div>',
 
     '</div>' // section-inner
   ].join('');
+
+  // Render workout picker
+  setTimeout(function(){
+    if(typeof sfRenderWorkoutPicker==='function')
+      sfRenderWorkoutPicker(goal,'dashWorkoutPicker');
+  }, 100);
 
   // Protein gap analysis
   var suppProtein = stack.filter(function(s) {
@@ -10103,6 +10125,341 @@ function sfBuildDashboard() {
 
 // Called after onboarding finish and on page load for returning users
 window.sfRefreshDashboard = sfBuildDashboard;
+
+</script>
+<script>
+// ════════════════════════════════════════════════════════════════
+// WORKOUT EXERCISE PICKER
+// ════════════════════════════════════════════════════════════════
+
+var SF_WORKOUT_KEY = 'sf_custom_workout_v1';
+
+// Exercise database — multiple options per slot
+var EXERCISE_DB = {
+  weight_gain: [
+    { slot:'Chest & Push',     options:[
+      {id:'bench',    name:'Barbell Bench Press',  eq:'gym',   sets:'4×5',   note:'Best for mass'},
+      {id:'dbpress',  name:'Dumbbell Press',        eq:'dumbb', sets:'4×8',   note:'Good alternative'},
+      {id:'pushups',  name:'Push-ups (weighted)',   eq:'none',  sets:'4×15',  note:'No equipment'},
+      {id:'dipsc',    name:'Dips',                  eq:'none',  sets:'4×10',  note:'Bodyweight classic'},
+    ]},
+    { slot:'Back & Pull',      options:[
+      {id:'deadlift', name:'Barbell Deadlift',      eq:'gym',   sets:'4×4',   note:'King of mass builders'},
+      {id:'row',      name:'Barbell Row',            eq:'gym',   sets:'4×6',   note:'Upper back mass'},
+      {id:'pullup',   name:'Pull-ups',               eq:'none',  sets:'4×8',   note:'Bodyweight classic'},
+      {id:'dbrow',    name:'Dumbbell Row',           eq:'dumbb', sets:'4×10',  note:'Unilateral strength'},
+    ]},
+    { slot:'Legs',             options:[
+      {id:'squat',    name:'Barbell Squat',          eq:'gym',   sets:'4×5',   note:'Best leg builder'},
+      {id:'legpress', name:'Leg Press',              eq:'gym',   sets:'4×8',   note:'Knee-friendly'},
+      {id:'goblet',   name:'Goblet Squat',           eq:'dumbb', sets:'4×12',  note:'Dumbbell squat'},
+      {id:'lunge',    name:'Walking Lunges',         eq:'none',  sets:'4×12',  note:'No equipment'},
+    ]},
+    { slot:'Shoulders',        options:[
+      {id:'ohp',      name:'Overhead Press',         eq:'gym',   sets:'4×6',   note:'Best shoulder mass'},
+      {id:'dbohp',    name:'DB Shoulder Press',      eq:'dumbb', sets:'4×10',  note:'Dumbbell OHP'},
+      {id:'latrise',  name:'Lateral Raises',         eq:'dumbb', sets:'3×15',  note:'Side delts'},
+      {id:'pikep',    name:'Pike Push-ups',          eq:'none',  sets:'4×12',  note:'No equipment'},
+    ]},
+    { slot:'Arms & Core',      options:[
+      {id:'curl',     name:'Barbell Curl',           eq:'gym',   sets:'3×10',  note:'Bicep mass'},
+      {id:'dbcurl',   name:'Dumbbell Curl',          eq:'dumbb', sets:'3×12',  note:'Alternating curls'},
+      {id:'plank',    name:'Plank Hold',             eq:'none',  sets:'3×60s', note:'Core stability'},
+      {id:'crunch',   name:'Weighted Crunch',        eq:'none',  sets:'3×20',  note:'Ab definition'},
+    ]},
+  ],
+  muscle_building: [
+    { slot:'Chest',            options:[
+      {id:'bench',    name:'Bench Press',            eq:'gym',   sets:'4×8',   note:'Compound mass'},
+      {id:'incdb',    name:'Incline DB Press',       eq:'dumbb', sets:'4×10',  note:'Upper chest'},
+      {id:'cablefly', name:'Cable Fly',              eq:'gym',   sets:'3×12',  note:'Isolation'},
+      {id:'pushups',  name:'Diamond Push-ups',       eq:'none',  sets:'4×15',  note:'No equipment'},
+    ]},
+    { slot:'Back',             options:[
+      {id:'pullup',   name:'Pull-ups / Chin-ups',    eq:'none',  sets:'4×8',   note:'Best bodyweight'},
+      {id:'cable',    name:'Cable Seated Row',       eq:'gym',   sets:'4×10',  note:'Mid-back focus'},
+      {id:'latpull',  name:'Lat Pulldown',           eq:'gym',   sets:'4×10',  note:'Lat width'},
+      {id:'dbrow',    name:'Dumbbell Row',           eq:'dumbb', sets:'4×12',  note:'Unilateral'},
+    ]},
+    { slot:'Legs',             options:[
+      {id:'squat',    name:'Barbell Squat',          eq:'gym',   sets:'4×8',   note:'Overall legs'},
+      {id:'rdl',      name:'Romanian Deadlift',      eq:'gym',   sets:'3×10',  note:'Hamstrings'},
+      {id:'legcurl',  name:'Leg Curl Machine',       eq:'gym',   sets:'3×12',  note:'Isolation'},
+      {id:'bulgsp',   name:'Bulgarian Split Squat',  eq:'dumbb', sets:'3×10',  note:'Single leg'},
+    ]},
+    { slot:'Shoulders',        options:[
+      {id:'ohp',      name:'Military Press',         eq:'gym',   sets:'4×8',   note:'Shoulder mass'},
+      {id:'latrise',  name:'Lateral Raises',         eq:'dumbb', sets:'4×15',  note:'Side delts'},
+      {id:'facepull', name:'Face Pull',              eq:'gym',   sets:'3×15',  note:'Rear delts'},
+      {id:'dbohp',    name:'Arnold Press',           eq:'dumbb', sets:'3×10',  note:'All-round shoulder'},
+    ]},
+    { slot:'Arms',             options:[
+      {id:'barcurl',  name:'Barbell Curl',           eq:'gym',   sets:'3×10',  note:'Bicep mass'},
+      {id:'skull',    name:'Skull Crusher',          eq:'gym',   sets:'3×10',  note:'Tricep mass'},
+      {id:'dip',      name:'Tricep Dips',            eq:'none',  sets:'3×12',  note:'No equipment'},
+      {id:'hcurl',    name:'Hammer Curl',            eq:'dumbb', sets:'3×12',  note:'Brachialis'},
+    ]},
+  ],
+  weight_loss: [
+    { slot:'Full Body Circuit', options:[
+      {id:'burpee',   name:'Burpees',                eq:'none',  sets:'3×15',  note:'Max calorie burn'},
+      {id:'jump',     name:'Jump Squats',            eq:'none',  sets:'3×20',  note:'Explosive power'},
+      {id:'mclimb',   name:'Mountain Climbers',      eq:'none',  sets:'3×30s', note:'Core + cardio'},
+      {id:'kettle',   name:'Kettlebell Swing',       eq:'dumbb', sets:'3×20',  note:'Posterior chain'},
+    ]},
+    { slot:'HIIT Cardio',       options:[
+      {id:'sprint',   name:'Sprint Intervals',       eq:'none',  sets:'8×30s', note:'Outdoor/treadmill'},
+      {id:'cycle',    name:'Cycling Intervals',      eq:'gym',   sets:'10×40s',note:'Low impact'},
+      {id:'rope',     name:'Jump Rope',              eq:'none',  sets:'5×2min',note:'High calorie burn'},
+      {id:'row',      name:'Rowing Machine',         eq:'gym',   sets:'6×500m',note:'Full body cardio'},
+    ]},
+    { slot:'Upper Body',        options:[
+      {id:'pushups',  name:'Push-ups',               eq:'none',  sets:'4×15',  note:'Bodyweight classic'},
+      {id:'dbrow',    name:'DB Bent Over Row',       eq:'dumbb', sets:'3×12',  note:'Back + burn'},
+      {id:'shoulder', name:'DB Shoulder Press',      eq:'dumbb', sets:'3×12',  note:'Shoulders'},
+      {id:'pike',     name:'Pike Push-ups',          eq:'none',  sets:'3×10',  note:'Shoulder work'},
+    ]},
+    { slot:'Lower Body',        options:[
+      {id:'lunge',    name:'Reverse Lunges',         eq:'none',  sets:'3×12',  note:'Glutes + quads'},
+      {id:'sumo',     name:'Sumo Squat',             eq:'none',  sets:'3×15',  note:'Inner thigh focus'},
+      {id:'gbridg',   name:'Glute Bridge',           eq:'none',  sets:'3×20',  note:'Glute activation'},
+      {id:'stepup',   name:'Step-ups',               eq:'none',  sets:'3×12',  note:'Functional'},
+    ]},
+    { slot:'Core',              options:[
+      {id:'plank',    name:'Plank Variations',       eq:'none',  sets:'3×45s', note:'Core stability'},
+      {id:'vups',     name:'V-Ups',                  eq:'none',  sets:'3×15',  note:'Full abs'},
+      {id:'bicycle',  name:'Bicycle Crunch',         eq:'none',  sets:'3×20',  note:'Obliques'},
+      {id:'legrise',  name:'Leg Raises',             eq:'none',  sets:'3×15',  note:'Lower abs'},
+    ]},
+  ],
+  endurance: [
+    { slot:'Running / Cardio',  options:[
+      {id:'easyrn',   name:'Easy Run',               eq:'none',  sets:'30-45min', note:'Conversational pace'},
+      {id:'tempo',    name:'Tempo Run',              eq:'none',  sets:'25min',    note:'Comfortably hard'},
+      {id:'interval', name:'Track Intervals',        eq:'none',  sets:'8×400m',   note:'Speed work'},
+      {id:'cycle',    name:'Cycling',                eq:'none',  sets:'45-60min', note:'Low impact cardio'},
+    ]},
+    { slot:'Strength Support',  options:[
+      {id:'deadlift', name:'Deadlift',               eq:'gym',   sets:'3×8',   note:'Posterior chain'},
+      {id:'lunge',    name:'Lunges',                 eq:'none',  sets:'3×12',  note:'Running specific'},
+      {id:'calf',     name:'Calf Raises',            eq:'none',  sets:'3×20',  note:'Running power'},
+      {id:'squat',    name:'Box Squat',              eq:'gym',   sets:'3×10',  note:'Explosive strength'},
+    ]},
+    { slot:'Core & Mobility',   options:[
+      {id:'plank',    name:'Plank Hold',             eq:'none',  sets:'3×60s', note:'Running posture'},
+      {id:'hip',      name:'Hip Flexor Stretch',     eq:'none',  sets:'3×45s', note:'Running mobility'},
+      {id:'yoga',     name:'Runner\'s Yoga Flow',   eq:'none',  sets:'20min', note:'Recovery'},
+      {id:'foam',     name:'Foam Rolling',           eq:'none',  sets:'10min', note:'Muscle recovery'},
+    ]},
+  ],
+  yoga: [
+    { slot:'Sun Salutations',   options:[
+      {id:'surya_a',  name:'Surya Namaskar A',       eq:'none',  sets:'6 rounds',  note:'Classic flow'},
+      {id:'surya_b',  name:'Surya Namaskar B',       eq:'none',  sets:'4 rounds',  note:'More intense'},
+      {id:'moonsal',  name:'Moon Salutation',        eq:'none',  sets:'4 rounds',  note:'Evening practice'},
+      {id:'sunflow',  name:'Sun Flow (Yin style)',   eq:'none',  sets:'15min',     note:'Slow & deep'},
+    ]},
+    { slot:'Standing Poses',    options:[
+      {id:'warrior1', name:'Warrior I & II',         eq:'none',  sets:'3×45s',     note:'Strength + focus'},
+      {id:'warrior3', name:'Warrior III',            eq:'none',  sets:'3×30s',     note:'Balance challenge'},
+      {id:'tree',     name:'Tree Pose',              eq:'none',  sets:'3×45s',     note:'Balance'},
+      {id:'triangle', name:'Triangle Pose',          eq:'none',  sets:'3×45s',     note:'Hip opening'},
+    ]},
+    { slot:'Core & Inversion',  options:[
+      {id:'boat',     name:'Boat Pose',              eq:'none',  sets:'3×30s',     note:'Core strength'},
+      {id:'downdog',  name:'Downward Dog Hold',      eq:'none',  sets:'3×60s',     note:'Full body stretch'},
+      {id:'crow',     name:'Crow Pose (practice)',   eq:'none',  sets:'5 attempts',note:'Arm balance'},
+      {id:'plank_y',  name:'Yoga Plank',             eq:'none',  sets:'3×45s',     note:'Core + arms'},
+    ]},
+    { slot:'Flexibility',       options:[
+      {id:'pigeon',   name:'Pigeon Pose',            eq:'none',  sets:'2×90s',     note:'Hip opener'},
+      {id:'lizard',   name:'Lizard Pose',            eq:'none',  sets:'2×60s',     note:'Deep hip'},
+      {id:'seated',   name:'Seated Forward Fold',    eq:'none',  sets:'3×60s',     note:'Hamstrings'},
+      {id:'butterfly',name:'Butterfly Stretch',      eq:'none',  sets:'3×60s',     note:'Inner thigh'},
+    ]},
+    { slot:'Relaxation',        options:[
+      {id:'savasan',  name:'Savasana',               eq:'none',  sets:'10min',     note:'Always end here'},
+      {id:'breathe',  name:'Pranayama (4-7-8)',      eq:'none',  sets:'10 cycles', note:'Stress relief'},
+      {id:'nidra',    name:'Yoga Nidra',             eq:'none',  sets:'20min',     note:'Deep rest'},
+      {id:'meditate', name:'Guided Meditation',      eq:'none',  sets:'15min',     note:'Mental clarity'},
+    ]},
+  ],
+  zumba: [
+    { slot:'Warm-up Dance',     options:[
+      {id:'march',    name:'March in Place',         eq:'none',  sets:'3min',      note:'Easy start'},
+      {id:'step',     name:'Side Step + Clap',       eq:'none',  sets:'3min',      note:'Rhythm warm-up'},
+      {id:'salsa_w',  name:'Salsa Basic Steps',      eq:'none',  sets:'3min',      note:'Latin rhythm'},
+      {id:'merengue', name:'Merengue March',         eq:'none',  sets:'3min',      note:'Hip movement'},
+    ]},
+    { slot:'Main Cardio',       options:[
+      {id:'zumba_cls',name:'Zumba Class (video)',    eq:'none',  sets:'30-45min',  note:'Full session'},
+      {id:'salsa',    name:'Salsa Routines',         eq:'none',  sets:'20min',     note:'Latin cardio'},
+      {id:'bhangra',  name:'Bhangra Fitness',        eq:'none',  sets:'20min',     note:'Indian cardio'},
+      {id:'bollywood',name:'Bollywood Dance Cardio', eq:'none',  sets:'25min',     note:'Fun + effective'},
+    ]},
+    { slot:'Strength Toning',   options:[
+      {id:'sqjump',   name:'Jump Squats',            eq:'none',  sets:'3×15',      note:'Lower body'},
+      {id:'lunge_z',  name:'Reverse Lunges',         eq:'none',  sets:'3×12',      note:'Glutes + legs'},
+      {id:'hipthrust',name:'Hip Thrust',             eq:'none',  sets:'3×15',      note:'Glute focus'},
+      {id:'sidekick', name:'Side Kick Combos',       eq:'none',  sets:'3×20',      note:'Dance + tone'},
+    ]},
+    { slot:'Cool Down',         options:[
+      {id:'stretch_z',name:'Full Body Stretch',      eq:'none',  sets:'5-8min',    note:'Always do this'},
+      {id:'slowsalsa',name:'Slow Salsa Flow',        eq:'none',  sets:'3min',      note:'Heart rate down'},
+      {id:'breathe_z',name:'Deep Breathing',         eq:'none',  sets:'5 cycles',  note:'Recovery'},
+      {id:'rollout',  name:'Foam Roll / Stretch',    eq:'none',  sets:'5min',      note:'Muscle care'},
+    ]},
+  ],
+};
+
+// Equipment labels
+var EQ_LABELS = { none:'No Equipment', dumbb:'Dumbbells Only', gym:'Full Gym' };
+var EQ_COLORS = { none:'#34d399', dumbb:'var(--gold)', gym:'var(--rose)' };
+
+function sfGetSavedWorkout() {
+  try { return JSON.parse(localStorage.getItem(SF_WORKOUT_KEY)||'null'); }
+  catch(e) { return null; }
+}
+
+function sfSaveWorkout(data) {
+  try { localStorage.setItem(SF_WORKOUT_KEY, JSON.stringify(data)); }
+  catch(e) {}
+}
+
+// Render workout picker in dashboard
+function sfRenderWorkoutPicker(goal, containerId) {
+  var container = document.getElementById(containerId);
+  if (!container) return;
+  
+  var exercises = EXERCISE_DB[goal] || EXERCISE_DB['muscle_building'];
+  var saved = sfGetSavedWorkout() || {};
+  var eqFilter = saved.eqFilter || 'all';
+
+  var html = [
+    '<div style="padding:.6rem .9rem;border-bottom:1px solid rgba(201,168,76,.08)">',
+    '<div style="font-family:DM Mono,monospace;font-size:.48rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem">Filter by Equipment</div>',
+    '<div style="display:flex;gap:.3rem;flex-wrap:wrap">',
+    ['all','none','dumbb','gym'].map(function(eq) {
+      var labels = { all:'All Options', none:'No Equipment', dumbb:'Dumbbells Only', gym:'Full Gym' };
+      var active  = eqFilter === eq;
+      return '<button onclick="sfFilterWorkout(\'' + goal + '\',\'' + containerId + '\',\'' + eq + '\')" style="'
+        + 'font-family:DM Mono,monospace;font-size:.48rem;letter-spacing:.06em;text-transform:uppercase;'
+        + 'padding:.2rem .6rem;border:1px solid rgba(201,168,76,' + (active?'.5':'.15') + ');'
+        + 'background:rgba(201,168,76,' + (active?'.1':'0') + ');'
+        + 'color:' + (active?'var(--gold)':'var(--muted)') + ';cursor:pointer">'
+        + labels[eq] + '</button>';
+    }).join(''),
+    '</div></div>',
+  ].join('');
+
+  exercises.forEach(function(slot, si) {
+    html += '<div style="border-bottom:1px solid rgba(201,168,76,.06);padding:.7rem .9rem">'
+      + '<div style="font-family:DM Mono,monospace;font-size:.5rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem">' + slot.slot + '</div>'
+      + '<div style="display:flex;flex-direction:column;gap:.3rem">';
+    
+    slot.options.forEach(function(ex) {
+      if (eqFilter !== 'all' && ex.eq !== eqFilter) return;
+      
+      var savedKey = goal + '_' + si + '_' + ex.id;
+      var checked  = saved[savedKey] === true;
+      var eqColor  = EQ_COLORS[ex.eq] || 'var(--muted)';
+      var eqLabel  = EQ_LABELS[ex.eq] || ex.eq;
+
+      html += '<label style="display:flex;align-items:center;gap:.6rem;cursor:pointer;padding:.35rem .4rem;'
+        + (checked ? 'background:rgba(201,168,76,.06);border-left:2px solid var(--gold);' : 'border-left:2px solid transparent;')
+        + 'transition:all .2s">'
+        + '<input type="checkbox" ' + (checked?'checked':'') + ' '
+        + 'onchange="sfToggleExercise(\'' + goal + '\',\'' + si + '_' + ex.id + '\',\'' + containerId + '\',this.checked)"'
+        + ' style="accent-color:var(--gold);width:14px;height:14px;flex-shrink:0;cursor:pointer">'
+        + '<div style="flex:1">'
+        + '<div style="display:flex;align-items:center;gap:.4rem;margin-bottom:.1rem">'
+        + '<span style="font-size:.82rem;color:var(--cream)">' + ex.name + '</span>'
+        + '<span style="font-family:DM Mono,monospace;font-size:.42rem;letter-spacing:.05em;text-transform:uppercase;padding:.05rem .3rem;border:1px solid ' + eqColor + ';color:' + eqColor + '">' + eqLabel + '</span>'
+        + '</div>'
+        + '<div style="font-family:DM Mono,monospace;font-size:.48rem;color:var(--muted)">'
+        + '<span style="color:var(--gold2)">' + ex.sets + '</span>'
+        + ' · ' + ex.note
+        + '</div>'
+        + '</div></label>';
+    });
+
+    html += '</div></div>';
+  });
+
+  // Save plan button
+  html += '<div style="padding:.8rem .9rem">'
+    + '<div id="' + containerId + '_count" style="font-family:DM Mono,monospace;font-size:.5rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem">'
+    + sfGetSelectedCount(goal, exercises) + ' exercises selected'
+    + '</div>'
+    + '<button onclick="sfSaveWorkoutPlan(\'' + goal + '\')" style="'
+    + 'display:flex;align-items:center;justify-content:center;gap:.4rem;width:100%;padding:.5rem;'
+    + 'background:var(--gold);color:var(--bg);font-family:DM Mono,monospace;font-size:.52rem;'
+    + 'letter-spacing:.1em;text-transform:uppercase;border:none;cursor:pointer">'
+    + '💾 Save My Workout Plan</button></div>';
+
+  container.innerHTML = html;
+}
+
+function sfGetSelectedCount(goal, exercises) {
+  var saved = sfGetSavedWorkout() || {};
+  var count = 0;
+  exercises.forEach(function(slot, si) {
+    slot.options.forEach(function(ex) {
+      if (saved[goal + '_' + si + '_' + ex.id]) count++;
+    });
+  });
+  return count;
+}
+
+window.sfToggleExercise = function(goal, key, containerId, checked) {
+  var saved = sfGetSavedWorkout() || {};
+  saved[goal + '_' + key] = checked;
+  sfSaveWorkout(saved);
+  // Update count
+  var exercises = EXERCISE_DB[goal] || [];
+  var countEl = document.getElementById(containerId + '_count');
+  if (countEl) countEl.textContent = sfGetSelectedCount(goal, exercises) + ' exercises selected';
+  // Update label style
+  var label = event.target.closest('label');
+  if (label) {
+    label.style.background = checked ? 'rgba(201,168,76,.06)' : '';
+    label.style.borderLeft = checked ? '2px solid var(--gold)' : '2px solid transparent';
+  }
+};
+
+window.sfFilterWorkout = function(goal, containerId, eqFilter) {
+  var saved = sfGetSavedWorkout() || {};
+  saved.eqFilter = eqFilter;
+  sfSaveWorkout(saved);
+  sfRenderWorkoutPicker(goal, containerId);
+};
+
+window.sfSaveWorkoutPlan = function(goal) {
+  var saved = sfGetSavedWorkout() || {};
+  var exercises = EXERCISE_DB[goal] || [];
+  var selected = [];
+  exercises.forEach(function(slot, si) {
+    var slotSelected = [];
+    slot.options.forEach(function(ex) {
+      if (saved[goal + '_' + si + '_' + ex.id]) {
+        slotSelected.push(ex.name + ' (' + ex.sets + ')');
+      }
+    });
+    if (slotSelected.length) {
+      selected.push({ slot: slot.slot, exercises: slotSelected });
+    }
+  });
+  if (!selected.length) {
+    if (typeof showToast !== 'undefined') showToast('Select at least one exercise first!', 'error', 2000);
+    return;
+  }
+  saved.savedPlan = selected;
+  saved.savedGoal = goal;
+  sfSaveWorkout(saved);
+  if (typeof showToast !== 'undefined') showToast('Workout plan saved! ✓', 'success', 2500);
+  // Rebuild dashboard to show saved plan summary
+  if (typeof sfBuildDashboard === 'function') sfBuildDashboard();
+};
 
 </script>
 </body>
