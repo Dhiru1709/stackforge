@@ -9774,9 +9774,10 @@ window.sfOBFinish = function() {
   // Build dashboard
   setTimeout(function(){ if(typeof sfBuildDashboard==='function') sfBuildDashboard(); }, 300);
 
-  // Scroll to creator and auto-generate
-  var creator = document.getElementById('creator');
-  if (creator) creator.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // Scroll to dashboard (which is now populated)
+  var dashEl = document.getElementById('sfDashboard');
+  var scrollTarget = (dashEl && dashEl.style.display !== 'none') ? dashEl : document.getElementById('creator');
+  if (scrollTarget) scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
   setTimeout(function() {
     // Select their goal card
@@ -9804,13 +9805,7 @@ window.sfOBFinish = function() {
       showToast(msg, 'success', 5000);
     }
 
-    // Auto-generate stack after 800ms
-    setTimeout(function() {
-      var genBtn = document.getElementById('generateBtn');
-      if (genBtn && !genBtn.disabled && selGoal) {
-        genBtn.click();
-      }
-    }, 800);
+    // Dashboard already shows the stack — no need to auto-generate in creator
   }, 600);
 };
 
@@ -9856,8 +9851,38 @@ function sfBuildDashboard() {
 
   if (!profile || !profile.goal) {
     dash.style.display = 'none';
+    // Show creator + BMI for new users
+    ['creator','bmi'].forEach(function(id){
+      var el=document.getElementById(id);
+      if(el) el.style.display='';
+    });
     return;
   }
+
+  // Profile exists — hide redundant sections
+  ['creator','bmi'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+
+  // Hide redundant sections with profile
+  ['workout','diet'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+  ['#workout','#diet'].forEach(function(href){
+    var link = document.querySelector('a[href="'+href+'"]');
+    if (link && link.parentElement) link.parentElement.style.display = 'none';
+  });
+  // Hide creator + BMI nav links
+  ['#creator','#bmi'].forEach(function(href){
+    var link = document.querySelector('a[href="'+href+'"]');
+    if (link && link.parentElement) link.parentElement.style.display = 'none';
+  });
+
+  // Show My Plan link
+  var myPlan = document.getElementById('navMyPlan');
+  if (myPlan) myPlan.style.display = 'block';
 
   dash.style.display = 'block';
 
