@@ -11,6 +11,9 @@
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
   <meta name="author" content="StackForge">
   <meta name="theme-color" content="#c9a84c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="StackForge">
+<link rel="manifest" href="manifest.json">
   <link rel="canonical" href="https://stackforge.in">
 
   <!-- ═══ OPEN GRAPH (Facebook, WhatsApp, LinkedIn) ═══════════ -->
@@ -4168,7 +4171,8 @@ input[type="range"]::-webkit-slider-thumb {
     </div>
   </div>
 
-  <div class="hstats">
+  <div id="emailCaptureBar" style="background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.2);padding:.9rem 1.4rem;margin:1.2rem 0;max-width:700px;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap"><div><div style="font-family:Cormorant Garamond,serif;font-size:1rem;color:var(--cream)">Get Weekly Supplement Tips</div><div style="font-family:DM Mono,monospace;font-size:.48rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:.2rem">Science-backed &middot; No spam &middot; Free</div></div><form style="display:flex;gap:.4rem;flex:1;min-width:240px" onsubmit="sfEmailSubmit(event)"><input type="email" id="emailInput" style="flex:1;background:var(--bg);border:1px solid rgba(201,168,76,.2);color:var(--text);font-family:DM Mono,monospace;font-size:.7rem;padding:.5rem .8rem;outline:none" placeholder="your@email.com" required><button type="submit" style="font-family:DM Mono,monospace;font-size:.55rem;letter-spacing:.1em;text-transform:uppercase;padding:.5rem 1.1rem;background:var(--gold);color:var(--bg);border:none;cursor:pointer;font-weight:600;white-space:nowrap">Subscribe</button></form><div id="emailSuccess" style="display:none;font-family:DM Mono,monospace;font-size:.6rem;color:#34d399">&#10003; Subscribed!</div></div>
+<div class="hstats">
     <div class="hst"><div class="hst-n" data-target="14" data-suffix="+">0</div><div class="hst-l">Supplements</div></div>
     <div class="hst"><div class="hst-n" data-target="6">0</div><div class="hst-l">Goals Supported</div></div>
     <div class="hst"><div class="hst-n" data-target="40" data-suffix="+">0</div><div class="hst-l">Languages</div></div>
@@ -4852,9 +4856,13 @@ input[type="range"]::-webkit-slider-thumb {
     <p class="section-sub" style="margin:.5rem auto 0;text-align:center">Comprehensive guides written from peer-reviewed research. No fluff. No paid opinions.</p>
   </div>
   <div class="blog-grid">
-    <div class="blog-card reveal" onclick="sfNavigate('article/three-supplements')">
-      <span class="blog-tag">Supplementation</span>
-      <div class="blog-title">The Only 3 Supplements Science Actually Agrees On</div>
+        <div class="blog-card" onclick="sfNavigate('article/creatine')"><span class="blog-tag">Science</span><div class="blog-title">Everything About Creatine</div><div class="blog-desc">Loading vs no-loading, timing myths, why it is #1 for any goal.</div><div class="blog-link">Read &#8594;</div></div>
+        <div class="blog-card" onclick="sfNavigate('article/whey-veg')"><span class="blog-tag">Vegetarian</span><div class="blog-title">Whey Protein for Vegetarians India</div><div class="blog-desc">Is whey vegetarian? Best brands under Rs 1,500. How much daily.</div><div class="blog-link">Read &#8594;</div></div>
+        <div class="blog-card" onclick="sfNavigate('article/mb-vs-asitis')"><span class="blog-tag">Comparison</span><div class="blog-title">MuscleBlaze vs AS-IT-IS 2025</div><div class="blog-desc">No paid promotion. Honest comparison of the two biggest Indian brands.</div><div class="blog-link">Read &#8594;</div></div>
+        <div class="blog-card" onclick="sfNavigate('article/creatine-guide')"><span class="blog-tag">Guide</span><div class="blog-title">Creatine Guide India 2025</div><div class="blog-desc">Best brands under Rs 500. Loading myths. Simple protocol.</div><div class="blog-link">Read &#8594;</div></div>
+        <div class="blog-card" onclick="sfNavigate('article/pre-workout')"><span class="blog-tag">Energy</span><div class="blog-title">Pre-Workout India — Do You Need One?</div><div class="blog-desc">Honest answer: probably not. What ingredients actually work.</div><div class="blog-link">Read &#8594;</div></div>
+        <div class="blog-card" onclick="sfNavigate('article/protein-guide')"><span class="blog-tag">Nutrition</span><div class="blog-title">How Much Protein Do Indians Need?</div><div class="blog-desc">Most eat 40g. Most need 140g. Bridge the gap affordably.</div><div class="blog-link">Read &#8594;</div></div>
+      </div>
       <div class="blog-excerpt">Out of the Free For All supplements on the market, peer-reviewed science has strong consensus on just three: Creatine, Protein and Caffeine. Here is why &mdash; and everything else ranked by evidence.</div>
       <div class="blog-meta">
         <span class="blog-read-time">&#128337; 8 min read &bull; Based on 200+ studies</span>
@@ -4891,7 +4899,7 @@ input[type="range"]::-webkit-slider-thumb {
     <a href="#creator" class="btn-primary">&#9889; Build My Free Stack</a>
     <button class="btn-ghost" onclick="document.getElementById('bmi').scrollIntoView({behavior:'smooth'})">Calculate My BMI <span class="btn-ghost-arrow">&#8594;</span></button>
   </div>
-</section>
+<div style="text-align:center;padding:1.2rem;font-family:DM Mono,monospace;font-size:.48rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);border-top:1px solid rgba(201,168,76,.06)"><a href="#" onclick="sfNavigate('privacy')" style="color:var(--muted);text-decoration:none;margin:0 .8rem">Privacy Policy</a> &middot; <a href="#" onclick="sfNavigate('terms')" style="color:var(--muted);text-decoration:none;margin:0 .8rem">Terms of Service</a> &middot; <span style="margin:0 .8rem">&copy; 2025 StackForge &middot; Amazon Associates Disclosure</span></div></section>
 
 <!-- FOOTER -->
 <footer>
@@ -6845,6 +6853,13 @@ function sfRenderPage(path){
   else if(path==='tools/goal-check')   sfPageGoalCheck(sub);
   else if(path==='tools/protein-builder') sfPageProteinBuilder(sub);
   else if(path==='tools/brand-checker')    sfPageBrandChecker(sub);
+  else if(path==='privacy') sfPagePrivacy(sub);
+  else if(path==='terms') sfPageTerms(sub);
+  else if(path==='article/whey-veg') sfPageWheyVeg(sub);
+  else if(path==='article/creatine-guide') sfPageCreatineGuide(sub);
+  else if(path==='article/mb-vs-asitis') sfPageMBvsASITIS(sub);
+  else if(path==='article/pre-workout') sfPagePreWorkoutIndia(sub);
+  else if(path==='article/protein-guide') sfPageProteinIndia2(sub);
   else if(path==='tools/body-fat')     sfPageBodyFatTool(sub);
   else if(path==='tools/1rm')          sfPage1RMTool(sub);
   else if(path==='tools/macro-plate')  sfPageMacroPlate(sub);
@@ -7742,7 +7757,7 @@ function customerSubmit(){
 
 function customerSkip(){
   customerHideModal();
-  // Mark as skipped so we don't show again for 24 hours
+  // Mark as skipped so we do not show again for 24 hours
   try{ localStorage.setItem('sf_modal_skip', new Date().toISOString()); }catch(e){}
 }
 
@@ -10460,6 +10475,151 @@ window.sfSaveWorkoutPlan = function(goal) {
   // Rebuild dashboard to show saved plan summary
   if (typeof sfBuildDashboard === 'function') sfBuildDashboard();
 };
+
+</script>
+<script>
+window.sfEmailSubmit=function(e){e.preventDefault();var em=document.getElementById('emailInput').value.trim();if(!em)return;try{var s=JSON.parse(localStorage.getItem('sf_subs')||'[]');if(s.indexOf(em)===-1)s.push(em);localStorage.setItem('sf_subs',JSON.stringify(s));}catch(x){}var suc=document.getElementById('emailSuccess');var frm=e.target;if(suc)suc.style.display='block';if(frm)frm.style.display='none';if(typeof showToast!=='undefined')showToast('Subscribed! Welcome to StackForge','success',3000);};
+// SEO Article Pages
+function sfPageWheyVeg(el) {
+  document.title = 'Whey Protein for Vegetarians India | StackForge';
+  var h = sfSubNav('Whey for Vegetarians');
+  h += '<div class="sp-body">';
+  h += '<div class="sp-hero"><div class="sp-tag">Guide</div>';
+  h += '<h1 class="sp-title">Whey for <em>Vegetarians</em> India</h1>';
+  h += '<p class="sp-p">Whey comes from milk. It is 100% vegetarian (not vegan). Complete guide for Indian vegetarians.</p></div>';
+  h += '<h2 style="font-family:Cormorant Garamond,serif;font-size:1.3rem;color:var(--cream);margin:1.2rem 0 .5rem">Is Whey Vegetarian?</h2>';
+  h += '<p style="font-size:.86rem;color:var(--muted);line-height:1.9">Yes. Whey is a by-product of cheese making from cow milk. No animal slaughter involved. Acceptable for lacto-vegetarians. <strong style="color:var(--cream)">Not suitable for vegans.</strong></p>';
+  h += '<h2 style="font-family:Cormorant Garamond,serif;font-size:1.3rem;color:var(--cream);margin:1.2rem 0 .5rem">Best Brands India</h2>';
+  h += '<p style="font-size:.86rem;color:var(--muted);line-height:1.9"><strong style="color:var(--cream)">AS-IT-IS Atom Whey</strong> &mdash; Rs 900&ndash;1,400 &bull; Pure &bull; FSSAI certified &bull; Best value<br>';
+  h += '<strong style="color:var(--cream)">MuscleBlaze Biozyme</strong> &mdash; Rs 1,200&ndash;1,800 &bull; Enhanced absorption &bull; Popular<br>';
+  h += '<strong style="color:var(--cream)">Nakpro Platinum</strong> &mdash; Rs 800&ndash;1,200 &bull; Affordable &bull; Good profile</p>';
+  h += '<div class="sp-callout"><div class="sp-callout-label">Key Point</div>';
+  h += '<div class="sp-callout-text">A 70kg person needs 140g protein daily. Dal + paneer gives ~50g. Two scoops whey adds 48g. The gap is real and supplements bridge it efficiently.</div></div>';
+  h += '<button class="btn-primary" onclick="sfNavigate(\'\')">Calculate My Protein Target</button>';
+  h += '</div>';
+  el.innerHTML = h;
+}
+
+function sfPageCreatineGuide(el) {
+  document.title = 'Creatine Complete Guide India 2025 | StackForge';
+  var h = sfSubNav('Creatine Guide');
+  h += '<div class="sp-body">';
+  h += '<div class="sp-hero"><div class="sp-tag">Science</div>';
+  h += '<h1 class="sp-title">Creatine <em>Complete Guide</em> India 2025</h1>';
+  h += '<p class="sp-p">The most researched supplement. Loading, dosage, timing, best Indian brands under Rs 500.</p></div>';
+  h += '<h2 style="font-family:Cormorant Garamond,serif;font-size:1.3rem;color:var(--cream);margin:1.2rem 0 .5rem">What Creatine Does</h2>';
+  h += '<p style="font-size:.86rem;color:var(--muted);line-height:1.9">Increases phosphocreatine stores in muscles enabling faster ATP regeneration. Result: more strength, more reps. ISSN rates it the most effective performance supplement. Backed by 500+ studies.</p>';
+  h += '<h2 style="font-family:Cormorant Garamond,serif;font-size:1.3rem;color:var(--cream);margin:1.2rem 0 .5rem">Simple Protocol</h2>';
+  h += '<p style="font-size:.86rem;color:var(--muted);line-height:1.9">3&ndash;5g daily, any time, with water. No loading needed. Takes 3&ndash;4 weeks to fully saturate muscles. Consistency matters more than timing.</p>';
+  h += '<h2 style="font-family:Cormorant Garamond,serif;font-size:1.3rem;color:var(--cream);margin:1.2rem 0 .5rem">Best Brands India Under Rs 500</h2>';
+  h += '<p style="font-size:.86rem;color:var(--muted);line-height:1.9"><strong style="color:var(--cream)">AS-IT-IS Creatine Monohydrate</strong> &mdash; Rs 349&ndash;450 &bull; Pure micronised &bull; FSSAI &bull; Best value<br>';
+  h += '<strong style="color:var(--cream)">MuscleBlaze Creatine</strong> &mdash; Rs 399&ndash;499 &bull; Reliable &bull; Good mixability<br>';
+  h += '<strong style="color:var(--cream)">ON Micronised Creatine</strong> &mdash; Rs 500&ndash;700 &bull; NSF certified &bull; Premium option</p>';
+  h += '<div class="sp-callout"><div class="sp-callout-label">Bottom Line</div>';
+  h += '<div class="sp-callout-text">AS-IT-IS creatine at Rs 349 is equal in quality to Rs 800 brands. Save the money. Take 5g daily and be consistent.</div></div>';
+  h += '</div>';
+  el.innerHTML = h;
+}
+
+function sfPageMBvsASITIS(el) {
+  document.title = 'MuscleBlaze vs AS-IT-IS India 2025 | StackForge';
+  var h = sfSubNav('MB vs AS-IT-IS');
+  h += '<div class="sp-body">';
+  h += '<div class="sp-hero"><div class="sp-tag">Comparison</div>';
+  h += '<h1 class="sp-title">MuscleBlaze vs <em>AS-IT-IS</em></h1>';
+  h += '<p class="sp-p">No paid promotion. Honest comparison of the two biggest Indian supplement brands.</p></div>';
+  h += '<h2 style="font-family:Cormorant Garamond,serif;font-size:1.3rem;color:var(--cream);margin:1.2rem 0 .5rem">Quick Verdict</h2>';
+  h += '<p style="font-size:.86rem;color:var(--muted);line-height:1.9"><strong style="color:var(--cream)">Choose AS-IT-IS if:</strong> Budget matters. You want pure supplements with transparent labels. Best for creatine, whey, omega-3.<br><br>';
+  h += '<strong style="color:var(--cream)">Choose MuscleBlaze if:</strong> You want better flavours, improved digestibility (Biozyme formula), wider product range. Worth the premium for flavoured whey.</p>';
+  h += '<h2 style="font-family:Cormorant Garamond,serif;font-size:1.3rem;color:var(--cream);margin:1.2rem 0 .5rem">Key Differences</h2>';
+  h += '<p style="font-size:.86rem;color:var(--muted);line-height:1.9">FSSAI: Both certified. Third-party testing: MuscleBlaze has Informed Sport on select products. Price: AS-IT-IS is 30&ndash;40% cheaper on average. Flavours: MuscleBlaze wins. Purity: AS-IT-IS wins.</p>';
+  h += '<div class="sp-callout"><div class="sp-callout-label">Our Pick</div>';
+  h += '<div class="sp-callout-text">Budget buyers: AS-IT-IS for protein and creatine. Premium users: MuscleBlaze Biozyme Whey for flavour and digestion. Both are FSSAI certified and trustworthy.</div></div>';
+  h += '</div>';
+  el.innerHTML = h;
+}
+
+function sfPagePreWorkoutIndia(el) {
+  document.title = 'Pre-Workout Guide India 2025 | StackForge';
+  var h = sfSubNav('Pre-Workout Guide');
+  h += '<div class="sp-body">';
+  h += '<div class="sp-hero"><div class="sp-tag">Energy</div>';
+  h += '<h1 class="sp-title">Pre-Workout Guide <em>India</em></h1>';
+  h += '<p class="sp-p">Do you actually need one? What ingredients work? Budget alternatives that are better value.</p></div>';
+  h += '<h2 style="font-family:Cormorant Garamond,serif;font-size:1.3rem;color:var(--cream);margin:1.2rem 0 .5rem">Honest Answer: Do You Need It?</h2>';
+  h += '<p style="font-size:.86rem;color:var(--muted);line-height:1.9">Mostly no. A strong coffee (100&ndash;200mg caffeine) 30 minutes before training gives 80% of the benefit at Rs 10 vs Rs 400. Pre-workouts are useful for: advanced lifters, late-night training, or when you specifically want Beta-Alanine and Citrulline benefits.</p>';
+  h += '<h2 style="font-family:Cormorant Garamond,serif;font-size:1.3rem;color:var(--cream);margin:1.2rem 0 .5rem">Ingredients That Work</h2>';
+  h += '<p style="font-size:.86rem;color:var(--muted);line-height:1.9"><strong style="color:var(--cream)">Caffeine (150&ndash;200mg)</strong> &mdash; Strong evidence. The main energy driver.<br>';
+  h += '<strong style="color:var(--cream)">Beta-Alanine (3.2g)</strong> &mdash; Strong evidence. Reduces fatigue. Causes harmless tingling.<br>';
+  h += '<strong style="color:var(--cream)">L-Citrulline (6&ndash;8g)</strong> &mdash; Good evidence. Better pump and blood flow.<br>';
+  h += '<strong style="color:var(--cream)">BCAAs in pre-workout</strong> &mdash; Weak evidence. Skip if protein intake is sufficient.</p>';
+  h += '<div class="sp-callout"><div class="sp-callout-label">Budget Hack</div>';
+  h += '<div class="sp-callout-text">Black coffee + AS-IT-IS Beta-Alanine (Rs 350/month) = better than most pre-workouts at one-third the price.</div></div>';
+  h += '</div>';
+  el.innerHTML = h;
+}
+
+function sfPageProteinIndia2(el) {
+  document.title = 'How Much Protein Do Indians Need? | StackForge';
+  var h = sfSubNav('Protein Guide India');
+  h += '<div class="sp-body">';
+  h += '<div class="sp-hero"><div class="sp-tag">Nutrition</div>';
+  h += '<h1 class="sp-title">How Much Protein Do <em>Indians Need</em>?</h1>';
+  h += '<p class="sp-p">Most Indians eat 40&ndash;50g daily. Most need 120&ndash;160g. How to bridge the gap affordably.</p></div>';
+  h += '<h2 style="font-family:Cormorant Garamond,serif;font-size:1.3rem;color:var(--cream);margin:1.2rem 0 .5rem">The Indian Protein Problem</h2>';
+  h += '<p style="font-size:.86rem;color:var(--muted);line-height:1.9">A typical Indian vegetarian meal (dal, rice, roti, sabzi) provides 30&ndash;50g protein daily. A 70kg person building muscle needs 140&ndash;154g per day. That 90&ndash;100g gap is exactly what supplements efficiently solve.</p>';
+  h += '<h2 style="font-family:Cormorant Garamond,serif;font-size:1.3rem;color:var(--cream);margin:1.2rem 0 .5rem">Best Protein Sources India &mdash; Per Rupee</h2>';
+  h += '<p style="font-size:.86rem;color:var(--muted);line-height:1.9">';
+  h += '<strong style="color:var(--cream)">Eggs</strong> &mdash; 6g per egg, ~Rs 8. Best budget protein.<br>';
+  h += '<strong style="color:var(--cream)">Soya Chunks (dry)</strong> &mdash; 52g per 100g, ~Rs 20. Best vegetarian per rupee.<br>';
+  h += '<strong style="color:var(--cream)">Chicken Breast</strong> &mdash; 31g per 100g, ~Rs 200. Best quality protein.<br>';
+  h += '<strong style="color:var(--cream)">Paneer</strong> &mdash; 18g per 100g, ~Rs 90. Good for vegetarians.<br>';
+  h += '<strong style="color:var(--cream)">Whey Protein</strong> &mdash; 24g per scoop, ~Rs 60. Most convenient.<br>';
+  h += '<strong style="color:var(--cream)">Dal (cooked)</strong> &mdash; 9g per 100g, ~Rs 5. Good base, low concentration.</p>';
+  h += '<div class="sp-callout"><div class="sp-callout-label">Simple Daily Protocol</div>';
+  h += '<div class="sp-callout-text">4 eggs + 1 cup dal + 100g paneer + 1 scoop whey = ~114g protein. Add 200g soya chunks = 140g total. Budget: Rs 150&ndash;200 per day.</div></div>';
+  h += '<button class="btn-primary" onclick="sfNavigate(\'\')">Calculate My Protein Target</button>';
+  h += '</div>';
+  el.innerHTML = h;
+}
+
+function sfPagePrivacy(el) {
+  document.title = 'Privacy Policy | StackForge';
+  var h = sfSubNav('Privacy Policy');
+  h += '<div class="sp-body"><div class="sp-hero"><div class="sp-tag">Legal</div>';
+  h += '<h1 class="sp-title">Privacy <em>Policy</em></h1><p class="sp-p">Last updated: May 2025</p></div>';
+  h += '<div style="font-size:.86rem;color:var(--muted);line-height:2">';
+  h += '<h3 style="font-family:Cormorant Garamond,serif;font-size:1.2rem;color:var(--cream);margin:1.2rem 0 .4rem">1. Data We Collect</h3>';
+  h += '<p>StackForge stores your fitness data (name, goal, body measurements, budget) locally in your browser using localStorage. We have no server. Your data never leaves your device.</p>';
+  h += '<h3 style="font-family:Cormorant Garamond,serif;font-size:1.2rem;color:var(--cream);margin:1.2rem 0 .4rem">2. Amazon Associates</h3>';
+  h += '<p>StackForge participates in the Amazon Associates Programme. When you click supplement links and purchase on Amazon, we earn a small commission at no extra cost to you. Amazon may track purchases per their own privacy policy.</p>';
+  h += '<h3 style="font-family:Cormorant Garamond,serif;font-size:1.2rem;color:var(--cream);margin:1.2rem 0 .4rem">3. AI Features</h3>';
+  h += '<p>AI Coach messages are sent to third-party providers (Groq, Google, Anthropic) using your own API key. StackForge does not store your conversations.</p>';
+  h += '<h3 style="font-family:Cormorant Garamond,serif;font-size:1.2rem;color:var(--cream);margin:1.2rem 0 .4rem">4. Medical Disclaimer</h3>';
+  h += '<p>Information on StackForge is for educational purposes only. Consult a qualified healthcare professional before starting any supplement programme, especially with pre-existing conditions.</p>';
+  h += '<h3 style="font-family:Cormorant Garamond,serif;font-size:1.2rem;color:var(--cream);margin:1.2rem 0 .4rem">5. Contact</h3>';
+  h += '<p>Email: <a href="mailto:hello@stackforge.in" style="color:var(--gold)">hello@stackforge.in</a></p>';
+  h += '</div></div>';
+  el.innerHTML = h;
+}
+
+function sfPageTerms(el) {
+  document.title = 'Terms of Service | StackForge';
+  var h = sfSubNav('Terms of Service');
+  h += '<div class="sp-body"><div class="sp-hero"><div class="sp-tag">Legal</div>';
+  h += '<h1 class="sp-title">Terms of <em>Service</em></h1><p class="sp-p">Last updated: May 2025</p></div>';
+  h += '<div style="font-size:.86rem;color:var(--muted);line-height:2">';
+  h += '<h3 style="font-family:Cormorant Garamond,serif;font-size:1.2rem;color:var(--cream);margin:1.2rem 0 .4rem">1. Use of Service</h3>';
+  h += '<p>StackForge is a free educational tool for personal, non-commercial use. By using StackForge, you agree to these terms.</p>';
+  h += '<h3 style="font-family:Cormorant Garamond,serif;font-size:1.2rem;color:var(--cream);margin:1.2rem 0 .4rem">2. No Medical Advice</h3>';
+  h += '<p>Content is for educational purposes only. StackForge is not liable for any health outcomes from following recommendations. Always consult a qualified professional.</p>';
+  h += '<h3 style="font-family:Cormorant Garamond,serif;font-size:1.2rem;color:var(--cream);margin:1.2rem 0 .4rem">3. Affiliate Disclosure</h3>';
+  h += '<p>StackForge earns commission through Amazon Associates. Recommendations are based on scientific evidence, not commission rates. Prices shown are estimates and may vary.</p>';
+  h += '<h3 style="font-family:Cormorant Garamond,serif;font-size:1.2rem;color:var(--cream);margin:1.2rem 0 .4rem">4. Governing Law</h3>';
+  h += '<p>These terms are governed by the laws of India.</p>';
+  h += '</div></div>';
+  el.innerHTML = h;
+}
 
 </script>
 </body>
